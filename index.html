@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Get countries list from geonames">
+<meta name="author" content="Drazen Peric">
+<meta name="keywords" content="countries, list, mysql, geonames">
+<title>Get countries in MySQL format</title>
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+<script type="text/javascript" src="js/jquery-1.8.2.min.js"></script>
+<script type="text/javascript" src="js/functions.js"></script>
+</head>
+<body>
+	<div id="container" class="container-fluid">
+		<div class="navbar">
+			<div class="navbar-inner">
+				<h2>Get countries</h2>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span12" id="inner-container">
+				<p class="lead">This script will generate MySQL "Countries" table depending on what fields you select. All data is fetched from geonames.org</p>
+				<p>
+					<a id="showexamplecode" href="#">MySQL Example code</a>
+				</p>
+				<p>
+					<code id="examplecode">
+						CREATE TABLE IF NOT EXISTS `countries` (<br />
+						&emsp;&emsp;&emsp;&emsp;`idCountry` int(5) NOT NULL AUTO_INCREMENT,<br />
+						&emsp;&emsp;&emsp;&emsp;`countryCode` char(2) NOT NULL DEFAULT '',<br />
+						&emsp;&emsp;&emsp;&emsp;`countryName` varchar(80) NOT NULL DEFAULT '',<br />
+						&emsp;&emsp;&emsp;&emsp;PRIMARY KEY (`idCountry`)<br />
+						) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;<br /><br />
+
+						INSERT INTO `countries` (`countryCode`, `countryName`) VALUES<br />
+						('AD', 'Andorra'),<br />
+						('AE', 'United Arab Emirates'),<br />
+						('AF', 'Afghanistan')<br />
+						.<br />
+						.<br />
+						.
+					</code>
+				</p>
+				<br/>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="countryCode" checked="checked">countryCode
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="countryName" checked="checked">countryName
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="currencyCode">currencyCode
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="population">population
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="fipsCode">fipsCode
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="isoNumeric">isoNumeric
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="north">north
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="south">south
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="east">east
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="west">west
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="capital">capital
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="continentName">continentName
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="continent">continent
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="areaInSqKm">areaInSqKm
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="languages">languages
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="isoAlpha3">isoAlpha3
+				</label>
+				<label class="checkbox">
+					<input type="checkbox" class="options" name="options" value="geonameId">geonameId
+				</label>
+				<p>
+					<button id="getcode" class="btn btn-primary" type="button">Get it!</button>
+				</p>
+				<hr />
+				<textarea id="mysqlcode" rows="20"></textarea>
+				<hr />
+				<div id="signature">
+					Web by <a href="http://www.echobehind.com" target="_blank"><span class="dp">DP</span></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
