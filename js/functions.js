@@ -22,7 +22,7 @@ $(document).ready(function () {
 	};
 
 	$('#showexamplecode').click(function (e) {
-		e.preventDefault;
+		e.preventDefault();
 
 		$('#examplecode').toggle();
 	})
