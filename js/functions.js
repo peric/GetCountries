@@ -102,7 +102,7 @@ $(document).ready(function () {
 			for (var j = 0; j < oLength; j++) {
 				var currValue = allValues[i][options[j]];
 				if (typeof currValue === "string")
-					sql += "'" + currValue + "', ";
+					sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
 				else if (typeof currValue === "number")
 					sql += "" + currValue + ", ";
 			}
