@@ -88,7 +88,7 @@ $(document).ready(function () {
 			sql += "\n	`" + options[i] + "` " + columns[options[i]] + ",";
 		}
 		sql += "\n	PRIMARY KEY (`idCountry`)";
-		sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;\n\n";
+		sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
 		
 		// insert into
 		sql += "INSERT INTO `countries` (";
