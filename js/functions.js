@@ -1,7 +1,8 @@
 $(document).ready(function () {
 	var allValues = [];
 	var options = [];
-	var columns = {
+	var settings = {type: "sqltype"};
+	var columnsAttr = {
 		'countryCode': "char(2) NOT NULL DEFAULT ''", 
 		'countryName': "varchar(80) NOT NULL DEFAULT ''",
 		'currencyCode': "char(3) DEFAULT NULL",
@@ -23,7 +24,6 @@ $(document).ready(function () {
 
 	$('#showexamplecode').click(function (e) {
 		e.preventDefault();
-
 		$('#examplecode').toggle();
 	})
 
@@ -41,11 +41,15 @@ $(document).ready(function () {
 			if ($this.is(':checked'))
 				options.push($(this).val());
 		});
-
+		$('.codetype').each(function () {
+			var $this = $(this);
+			if ($this.is(':checked'))
+				settings.type = $this.val();
+		});
 		fetchCountries();
 	});
 
-	$("#mysqlcode").focus(function() {
+	$("#generatedcode").focus(function() {
     	var $this = $(this);
     	$this.select();
 
@@ -65,12 +69,8 @@ $(document).ready(function () {
 					var currAttr = options[j];
 					value[currAttr] = data.geonames[i][currAttr]; 
 				}
-
 				allValues.push(value);
 			}
-			console.log(allValues);
-			console.log(allValues.length);
-			console.log(allValues[0].countryName)
 			generateScript();
 		});
 	}
@@ -78,39 +78,78 @@ $(document).ready(function () {
 	var generateScript = function () {
 		var oLength = options.length;
 		var valuesLength = allValues.length;
+		var sql = "";
+		var xml = "";
 
-		// create table
-		var sql = 
-				"CREATE TABLE IF NOT EXISTS `countries` (" +
-				"\n	`idCountry` int(5) NOT NULL AUTO_INCREMENT,";
-		for (var i = 0; i < oLength; i++) {
-			var currAttr = options[i];
-			sql += "\n	`" + options[i] + "` " + columns[options[i]] + ",";
-		}
-		sql += "\n	PRIMARY KEY (`idCountry`)";
-		sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
-		
-		// insert into
-		sql += "INSERT INTO `countries` (";
-		for (var i = 0; i < oLength; i++) {
-			sql += "`" + options[i] + "`, ";
-		}
-		sql = sql.substring(0, sql.length - 2);
-		sql += ") VALUES";
-		for (var i = 0; i < valuesLength; i++) {
-			sql += "\n("
-			for (var j = 0; j < oLength; j++) {
-				var currValue = allValues[i][options[j]];
-				if (typeof currValue === "string")
-					sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
-				else if (typeof currValue === "number")
-					sql += "" + currValue + ", ";
+		if (settings.type === "sqltype") {
+			// create table
+			sql += "CREATE TABLE IF NOT EXISTS `countries` (" +
+					"\n	`idCountry` int(5) NOT NULL AUTO_INCREMENT,";
+			for (var i = 0; i < oLength; i++) {
+				var currAttr = options[i];
+				sql += "\n	`" + options[i] + "` " + columnsAttr[options[i]] + ",";
+			}
+			sql += "\n	PRIMARY KEY (`idCountry`)";
+			sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
+			
+			// insert into
+			sql += "INSERT INTO `countries` (";
+			for (var i = 0; i < oLength; i++) {
+				sql += "`" + options[i] + "`, ";
 			}
 			sql = sql.substring(0, sql.length - 2);
-			sql += "),"
+			sql += ") VALUES";
+			for (var i = 0; i < valuesLength; i++) {
+				sql += "\n("
+				for (var j = 0; j < oLength; j++) {
+					var currValue = allValues[i][options[j]];
+					if (typeof currValue === "string")
+						sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
+					else if (typeof currValue === "number")
+						sql += "" + currValue + ", ";
+				}
+				sql = sql.substring(0, sql.length - 2);
+				sql += "),"
+			}
+			sql = sql.substring(0, sql.length - 1);
+			
+			// set sql code
+			$('#generatedcode').text(sql);
+		} else if (settings.type === "xmltype") {
+			xml += "<countries>";
+			for (var i = 0; i < valuesLength; i++) {
+				xml += "\n	<country";
+				for (var j = 0; j < oLength; j++) {
+					var currOption = options[j];
+					var currValue = allValues[i][options[j]];
+					xml += " " + currOption + "=\"" + currValue + "\"";
+				}
+				xml += " />";
+			}
+			xml += "\n</countries>";
+
+			/*for (var i = 0; i < valuesLength; i++) {
+				sql += "\n("
+				for (var j = 0; j < oLength; j++) {
+					var currValue = allValues[i][options[j]];
+					if (typeof currValue === "string")
+						sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
+					else if (typeof currValue === "number")
+						sql += "" + currValue + ", ";
+				}
+				//sql = sql.substring(0, sql.length - 2);
+				
+				//sql += "),"
+			}*/
+
+			/*
+			<states>
+  <state name="ALABAMA" abbreviation="AL" /> 
+  <state name="ALASKA" abbreviation="AK" /> 
+  ...
+</states>*/
+			// set xml code
+			$('#generatedcode').text(xml);
 		}
-		sql = sql.substring(0, sql.length - 1);
-		
-		$('#mysqlcode').text(sql);
 	}
 });
