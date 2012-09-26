@@ -127,27 +127,7 @@ $(document).ready(function () {
 				xml += " />";
 			}
 			xml += "\n</countries>";
-
-			/*for (var i = 0; i < valuesLength; i++) {
-				sql += "\n("
-				for (var j = 0; j < oLength; j++) {
-					var currValue = allValues[i][options[j]];
-					if (typeof currValue === "string")
-						sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
-					else if (typeof currValue === "number")
-						sql += "" + currValue + ", ";
-				}
-				//sql = sql.substring(0, sql.length - 2);
-				
-				//sql += "),"
-			}*/
-
-			/*
-			<states>
-  <state name="ALABAMA" abbreviation="AL" /> 
-  <state name="ALASKA" abbreviation="AK" /> 
-  ...
-</states>*/
+			
 			// set xml code
 			$('#generatedcode').text(xml);
 		}
