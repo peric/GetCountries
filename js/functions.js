@@ -1,7 +1,7 @@
 $(document).ready(function () {
 	var allValues = [];
 	var options = [];
-	var settings = {type: "sqltype"};
+	var settings = {type: "mysqltype"};
 	var columnsAttr = {
 		'countryCode': "char(2) NOT NULL DEFAULT ''", 
 		'countryName': "varchar(80) NOT NULL DEFAULT ''",
@@ -81,7 +81,7 @@ $(document).ready(function () {
 		var sql = "";
 		var xml = "";
 
-		if (settings.type === "sqltype") {
+		if (settings.type === "mysqltype") {
 			// create table
 			sql += "CREATE TABLE IF NOT EXISTS `countries` (" +
 					"\n	`idCountry` int(5) NOT NULL AUTO_INCREMENT,";
