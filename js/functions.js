@@ -4,7 +4,7 @@ $(document).ready(function () {
 	var settings = {type: "mysqltype"};
 	var columnsAttr = {
 		'countryCode': "char(2) NOT NULL DEFAULT ''", 
-		'countryName': "varchar(80) NOT NULL DEFAULT ''",
+		'countryName': "varchar(45) NOT NULL DEFAULT ''",
 		'currencyCode': "char(3) DEFAULT NULL",
 		'population': "varchar(20) DEFAULT NULL",
 		'fipsCode': "char(2) DEFAULT NULL",
