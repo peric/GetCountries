@@ -41,11 +41,13 @@ $(document).ready(function () {
 			if ($this.is(':checked'))
 				options.push($(this).val());
 		});
+
 		$('.codetype').each(function () {
 			var $this = $(this);
 			if ($this.is(':checked'))
 				settings.type = $this.val();
 		});
+
 		fetchCountries();
 	});
 
@@ -84,12 +86,12 @@ $(document).ready(function () {
 		if (settings.type === "mysqltype") {
 			// create table
 			sql += "CREATE TABLE IF NOT EXISTS `countries` (" +
-					"\n	`idCountry` int(5) NOT NULL AUTO_INCREMENT,";
+					"\n\t`idCountry` int(5) NOT NULL AUTO_INCREMENT,";
 			for (var i = 0; i < oLength; i++) {
 				var currAttr = options[i];
-				sql += "\n	`" + options[i] + "` " + columnsAttr[options[i]] + ",";
+				sql += "\n\t`" + options[i] + "` " + columnsAttr[options[i]] + ",";
 			}
-			sql += "\n	PRIMARY KEY (`idCountry`)";
+			sql += "\n\tPRIMARY KEY (`idCountry`)";
 			sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
 			
 			// insert into
@@ -118,7 +120,7 @@ $(document).ready(function () {
 		} else if (settings.type === "xmltype") {
 			xml += "<countries>";
 			for (var i = 0; i < valuesLength; i++) {
-				xml += "\n	<country";
+				xml += "\n\t<country";
 				for (var j = 0; j < oLength; j++) {
 					var currOption = options[j];
 					var currValue = allValues[i][options[j]];
