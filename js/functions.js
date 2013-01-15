@@ -23,8 +23,8 @@ $(document).ready(function () {
 	};
 
 	$('#showexamplecode').click(function (e) {
-		e.stopPropagation();
 		e.preventDefault();
+		
 		$('#examplecode').toggle();
 	})
 
