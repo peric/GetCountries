@@ -83,6 +83,7 @@ $(document).ready(function () {
 		var valuesLength = allValues.length;
 		var sql = "";
 		var xml = "";
+		var json = "";
 
 		if (settings.type === "mysqltype") {
 			// create table
@@ -133,6 +134,34 @@ $(document).ready(function () {
 			
 			// set xml code
 			$('#generatedcode').text(xml);
+		} else if (settings.type === "jsontype") {
+			json += "{";
+			json += "\n\tcountries: {";
+			json += "\n\t\tcountry: [";
+			for(var i = 0; i < valuesLength; i++) {
+				json += "\n\t\t\t{";
+					for (var j = 0; j < oLength; j++) {
+						var currOption = options[j];
+						var currValue = allValues[i][options[j]];
+
+						if (j == (oLength - 1)) {
+							json += "\n\t\t\t\t" + currOption + ": '" + currValue + "'";
+						} else {
+							json += "\n\t\t\t\t" + currOption + ": '" + currValue + "',";
+						}
+					}
+				if (i == (valuesLength - 1)) {
+					json += "\n\t\t\t}";
+				} else {
+					json += "\n\t\t\t},";
+				}
+			}
+			json += "\n\t\t]";
+			json += "\n\t}";
+			json += "\n}";
+
+			//set json code
+			$('#generatedcode').text(json);
 		}
 	}
 });
