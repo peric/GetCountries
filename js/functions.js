@@ -136,8 +136,8 @@ $(document).ready(function () {
 			$('#generatedcode').text(xml);
 		} else if (settings.type === "jsontype") {
 			json += "{";
-			json += "\n\tcountries: {";
-			json += "\n\t\tcountry: [";
+			json += "\n\t\"countries\": {";
+			json += "\n\t\t\"country\": [";
 			for(var i = 0; i < valuesLength; i++) {
 				json += "\n\t\t\t{";
 					for (var j = 0; j < oLength; j++) {
@@ -145,9 +145,9 @@ $(document).ready(function () {
 						var currValue = allValues[i][options[j]];
 
 						if (j == (oLength - 1)) {
-							json += "\n\t\t\t\t" + currOption + ": '" + currValue + "'";
+							json += "\n\t\t\t\t\"" + currOption + "\": \"" + currValue + "\"";
 						} else {
-							json += "\n\t\t\t\t" + currOption + ": '" + currValue + "',";
+							json += "\n\t\t\t\t\"" + currOption + "\": \"" + currValue + "\",";
 						}
 					}
 				if (i == (valuesLength - 1)) {
