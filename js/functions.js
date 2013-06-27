@@ -84,6 +84,7 @@ $(document).ready(function () {
 		var sql = "";
 		var xml = "";
 		var json = "";
+		var yaml = "";
 
 		if (settings.type === "mysqltype") {
 			// create table
@@ -162,6 +163,26 @@ $(document).ready(function () {
 
 			//set json code
 			$('#generatedcode').text(json);
+		} else if (settings.type === "yamltype") {
+			yaml += "---";
+			yaml += "\ncountries:";
+			yaml += "\n  country:";
+
+			for (var i = 0; i < valuesLength; i++) {
+				yaml += "\n    -";
+
+				for (var j = 0; j < oLength; j++) {
+					var currOption = options[j];
+					var currValue = allValues[i][options[j]];
+
+					yaml += "\n      " + currOption + ": " + currValue;
+				}	
+			}
+
+			yaml += "\n..."
+
+			//set yaml code
+			$('#generatedcode').text(yaml);
 		}
 	}
 });
