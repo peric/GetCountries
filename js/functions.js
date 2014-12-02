@@ -21,6 +21,25 @@ $(document).ready(function () {
 		'isoAlpha3': "char(3) DEFAULT NULL",
 		'geonameId': "int(10) DEFAULT NULL"
 	};
+	var columnsAttrFB = {
+		'countryCode': "char(2) NOT NULL", 
+		'countryName': "varchar(45) NOT NULL",
+		'currencyCode': "char(3) DEFAULT NULL",
+		'population': "varchar(20) DEFAULT NULL",
+		'fipsCode': "char(2) DEFAULT NULL",
+		'isoNumeric': "char(4) DEFAULT NULL",
+		'north': "varchar(30) DEFAULT NULL",
+		'south': "varchar(30) DEFAULT NULL",
+		'east': "varchar(30) DEFAULT NULL",
+		'west': "varchar(30) DEFAULT NULL",
+		'capital': "varchar(30) DEFAULT NULL",
+		'continentName': "varchar(15) DEFAULT NULL",
+		'continent': "char(2) DEFAULT NULL",
+		'areaInSqKm': "varchar(20) DEFAULT NULL",
+		'languages': "varchar(30) DEFAULT NULL",
+		'isoAlpha3': "char(3) DEFAULT NULL",
+		'geonameId': "integer(10) DEFAULT NULL"
+	};	
 
 	$('#showexamplecode').click(function (e) {
 		e.preventDefault();
@@ -162,6 +181,42 @@ $(document).ready(function () {
 
 			//set json code
 			$('#generatedcode').text(json);
-		}
+		} else if (settings.type === "firebirdtype") {
+			// create table
+			sql = "CREATE TABLE  countries (";
+			for (var i = 0; i < oLength; i++) {
+				var currAttr = options[i];
+				sql += "\n\t " + options[i] + " " + columnsAttrFB[options[i]] + ",";
+			}
+			
+  		    sql += "\n\tPRIMARY KEY (countryCode)";
+			sql += "\n);\n\n";
+
+			for (var i = 0; i < valuesLength; i++) {
+				
+				// insert into
+				sql += "INSERT INTO countries (";
+				for (var it = 0; it < oLength; it++) {
+					sql += " " + options[it] + ", ";
+				}
+				sql = sql.substring(0, sql.length - 2);
+				sql += ") VALUES";
+			
+				sql += " ("
+				for (var j = 0; j < oLength; j++) {
+					var currValue = allValues[i][options[j]];
+					if (typeof currValue === "string")
+						sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
+					else if (typeof currValue === "number")
+						sql += "" + currValue + ", ";
+				}
+				sql = sql.substring(0, sql.length - 2);
+				sql += "); \n"
+			}
+			sql = sql.substring(0, sql.length - 1);
+			
+			// set sql code
+			$('#generatedcode').text(sql);
 	}
+ }	
 });
