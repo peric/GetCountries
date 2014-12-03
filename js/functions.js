@@ -17,7 +17,7 @@ $(document).ready(function () {
 		'continentName': "varchar(15) DEFAULT NULL",
 		'continent': "char(2) DEFAULT NULL",
 		'areaInSqKm': "varchar(20) DEFAULT NULL",
-		'languages': "varchar(30) DEFAULT NULL",
+		'languages': "varchar(100) DEFAULT NULL",
 		'isoAlpha3': "char(3) DEFAULT NULL",
 		'geonameId': "int(10) DEFAULT NULL"
 	};
@@ -36,9 +36,9 @@ $(document).ready(function () {
 		'continentName': "varchar(15) DEFAULT NULL",
 		'continent': "char(2) DEFAULT NULL",
 		'areaInSqKm': "varchar(20) DEFAULT NULL",
-		'languages': "varchar(30) DEFAULT NULL",
+		'languages': "varchar(100) DEFAULT NULL",
 		'isoAlpha3': "char(3) DEFAULT NULL",
-		'geonameId': "integer(10) DEFAULT NULL"
+		'geonameId': "integer DEFAULT NULL"
 	};	
 
 	$('#showexamplecode').click(function (e) {
@@ -103,6 +103,7 @@ $(document).ready(function () {
 		var sql = "";
 		var xml = "";
 		var json = "";
+		var csv = "";		
 
 		if (settings.type === "mysqltype") {
 			// create table
@@ -206,17 +207,36 @@ $(document).ready(function () {
 				for (var j = 0; j < oLength; j++) {
 					var currValue = allValues[i][options[j]];
 					if (typeof currValue === "string")
-						sql += "'" + currValue.replace(/\x27/g, '\\\x27') + "', ";
+						sql += "'" + currValue.replace(/\x27/g, 'x27x27') + "', ";
 					else if (typeof currValue === "number")
 						sql += "" + currValue + ", ";
 				}
 				sql = sql.substring(0, sql.length - 2);
 				sql += "); \n"
-			}
+			} 
 			sql = sql.substring(0, sql.length - 1);
 			
 			// set sql code
 			$('#generatedcode').text(sql);
-	}
- }	
+	    } else if (settings.type === "csvtype") {
+			csv = "";
+			for (var j = 0; j < oLength; j++) {
+				var currOption = options[j];
+				csv += "\"" + currOption + "\",";
+			}
+			csv = csv.substring(0, csv.length - 1);			
+			csv += "\n";
+			for (var i = 0; i < valuesLength; i++) {
+				for (var j = 0; j < oLength; j++) {
+					var currValue = allValues[i][options[j]];
+					csv += "\"" + currValue + "\",";
+				}
+				csv = csv.substring(0, csv.length - 1);
+				csv += "\n";
+			}
+			
+			// set csv code
+     	   $('#generatedcode').text(csv);
+        }
+    }		
 });
