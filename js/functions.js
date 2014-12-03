@@ -103,6 +103,7 @@ $(document).ready(function () {
 		var sql = "";
 		var xml = "";
 		var json = "";
+		var csv = "";		
 
 		if (settings.type === "mysqltype") {
 			// create table
@@ -212,11 +213,30 @@ $(document).ready(function () {
 				}
 				sql = sql.substring(0, sql.length - 2);
 				sql += "); \n"
-			}
+			} 
 			sql = sql.substring(0, sql.length - 1);
 			
 			// set sql code
 			$('#generatedcode').text(sql);
-	}
- }	
+	    } else if (settings.type === "csvtype") {
+			csv = "";
+			for (var j = 0; j < oLength; j++) {
+				var currOption = options[j];
+				csv += "\"" + currOption + "\",";
+			}
+			csv = csv.substring(0, csv.length - 1);			
+			csv += "\n";
+			for (var i = 0; i < valuesLength; i++) {
+				for (var j = 0; j < oLength; j++) {
+					var currValue = allValues[i][options[j]];
+					csv += "\"" + currValue + "\",";
+				}
+				csv = csv.substring(0, csv.length - 1);
+				csv += "\n";
+			}
+			
+			// set csv code
+     	   $('#generatedcode').text(csv);
+        }
+    }		
 });
