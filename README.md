@@ -6,3 +6,9 @@ This is my fork of the peric/GetCountries repository. The additional feature is 
 <i>YAML data generation added; According to YAML guidelines, each space is not a TAB character, but a group of two spaces. Thus, space formatting is implemented here.</i>
 
 All data is fetched from geonames.org
+
+Here is a screenshot of the newly added feature, having selected only <b>countryCode</b> and <b>countryName</b> columns:
+
+<p align="center">
+  <img  src="_img/YAML_feature.PNG" width="50%" height="50%" alt="YAML feature" />
+</p>
