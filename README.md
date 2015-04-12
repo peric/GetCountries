@@ -1,14 +1,10 @@
 GetCountries
 ============
 
-This is my fork of the peric/GetCountries repository. The additional feature is YAML data generation. 
-
-<i>YAML data generation added; According to YAML guidelines, each space is not a TAB character, but a group of two spaces. Thus, space formatting is implemented here.</i>
-
-All data is fetched from geonames.org
+MySQL, Firebird, XML, JSON, CSV or YAML generator for custom Countries data. All the data is fetched from geonames.org
 
 <h2>Example</h2>
-Here is a screenshot of the newly added feature, having selected only <b>countryCode</b> and <b>countryName</b> columns:
+Here is a screenshot of the YAML generated output, having selected only <b>countryCode</b> and <b>countryName</b> columns:
 
 <p align="center">
   <img  src="_img/YAML_feature.PNG" alt="YAML feature" />
