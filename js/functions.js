@@ -1,9 +1,9 @@
 $(document).ready(function () {
 	var allValues = [];
 	var options = [];
-	var settings = {type: "mysqltype",dblookup : false};
+	var settings = {type: "mysqltype", dblookup : false};
 	var columnsAttr = {
-		'countryCode': "char(2) NOT NULL DEFAULT ''", 
+		'countryCode': "char(2) NOT NULL DEFAULT ''",
 		'countryName': "varchar(45) NOT NULL DEFAULT ''",
 		'currencyCode': "char(3) DEFAULT NULL",
 		'population': "varchar(20) DEFAULT NULL",
@@ -22,7 +22,7 @@ $(document).ready(function () {
 		'geonameId': "int(10) DEFAULT NULL"
 	};
 	var columnsAttrFB = {
-		'countryCode': "char(3) NOT NULL", 
+		'countryCode': "char(3) NOT NULL",
 		'countryName': "varchar(45) NOT NULL",
 		'currencyCode': "char(3) DEFAULT NULL",
 		'population': "varchar(20) DEFAULT NULL",
@@ -39,9 +39,9 @@ $(document).ready(function () {
 		'languages': "varchar(100) DEFAULT NULL",
 		'isoAlpha3': "char(3) DEFAULT NULL",
 		'geonameId': "integer DEFAULT NULL"
-	};	
+	};
 	var columnsAttrLookupFB = {
-		'countryCode': "char(3) NOT NULL", 
+		'countryCode': "char(3) NOT NULL",
 		'countryName': "varchar(45) NOT NULL",
 		'currencyCode': "char(3) DEFAULT NULL",
 		'population': "varchar(20) DEFAULT NULL",
@@ -57,31 +57,31 @@ $(document).ready(function () {
 		'areaInSqKm': "varchar(20) DEFAULT NULL",
 		'isoAlpha3': "char(3) DEFAULT NULL",
 		'geonameId': "integer DEFAULT NULL"
-	};	
-	
+	};
+
 	var columnsAttrLookupLang = {
-		'countryCode': "char(3) NOT NULL", 
+		'countryCode': "char(3) NOT NULL",
 		'languages': "varchar(10) NOT NULL",
-	};		
+	};
 
 	$('#showexamplecode').click(function (e) {
 		e.preventDefault();
-		
+
 		$('#examplecode').toggle();
 	})
 
 	$('.options').change(function () {
 		if ($('.options:checked').length < 1) {
 			$(this).attr('checked','checked');
-	    }	
+	    }
 	});
 
 	$('#dblookup').click(function (e) {
 		if ($('#dblookup').attr('checked')) {
 			$('.options[value=languages]').attr('checked','checked');
-	    }		
-	});	
-	$('#getcode').click(function () {
+	    }
+	});
+	$('#generatecode').click(function () {
 		allValues = [];
 		options = [];
 
@@ -89,7 +89,7 @@ $(document).ready(function () {
 			var $this = $(this);
 			if ($this.is(':checked')) {
 				options.push($(this).val());
-			}	
+			}
 		});
 		if ($('#dblookup').attr('checked')) {
 		  if (!$('.options[value=languages]').attr('checked')) {
@@ -102,7 +102,7 @@ $(document).ready(function () {
 			if ($this.is(':checked'))
 				settings.type = $this.val();
 		});
-		
+
 		$('.dblookup').each(function () {
 			var $this = $(this);
 			if ($this.is(':checked')) {
@@ -111,7 +111,7 @@ $(document).ready(function () {
 			  	settings.dblookup = false;
 			}
 		});
-		
+
 		fetchCountries();
 	});
 
@@ -133,7 +133,7 @@ $(document).ready(function () {
 
 				for (var j = 0; j < oLength; j++) {
 					var currAttr = options[j];
-					value[currAttr] = data.geonames[i][currAttr]; 
+					value[currAttr] = data.geonames[i][currAttr];
 				}
 				allValues.push(value);
 			}
@@ -146,44 +146,44 @@ $(document).ready(function () {
 		return a;
 	  },[]);
 	}
-	
+
 	var generateLookupScript = function (i) {
 	   /*
-	     Purpose : To loop through each language value and create a entry in the country_lang_lnk tabel for 
+	     Purpose : To loop through each language value and create a entry in the country_lang_lnk tabel for
 		            it.
 	   */
 	   var sqlTmp = '';
 	   var langVals = uniqueArray(allValues[i]['languages'].split(","));
 	   for (var lKey in langVals) { //loop for each language value
 	        if (langVals[lKey] == '') { continue; }
-			
+
 			sqlTmp += "INSERT INTO country_lang_lnk (";
 
-			for(var key in columnsAttrLookupLang){ 
+			for(var key in columnsAttrLookupLang){
 			    if (settings.type === "mysqltype") {
 				  sqlTmp += " `" + key + "`, ";
 				} else {
 				  sqlTmp += " " + key + ", ";
-                }				
+                }
 			}
 			sqlTmp = sqlTmp.substring(0, sqlTmp.length - 2);
 			sqlTmp += ") VALUES";
 			sqlTmp += " ("
-			for(var key in columnsAttrLookupLang){ 
+			for(var key in columnsAttrLookupLang){
 			    if (key == 'languages') {
-				  var currValue = langVals[lKey];				
+				  var currValue = langVals[lKey];
 				} else {
 				  var currValue = allValues[i][key];
-				}  
-			
+				}
+
 				if (typeof currValue === "string")
 				  sqlTmp += "'" + currValue + "', ";
 				else if (typeof currValue === "number")
 				  sqlTmp += "" + currValue + ", ";
 			}
 			sqlTmp = sqlTmp.substring(0, sqlTmp.length - 2);
-			sqlTmp += "); \n"	
-		} //end of loop for each language value	
+			sqlTmp += "); \n"
+		} //end of loop for each language value
 	   return sqlTmp;
 	}
 
@@ -200,22 +200,22 @@ $(document).ready(function () {
 		if (settings.type === "mysqltype") {
 			// create table
 			sql = "CREATE TABLE IF NOT EXISTS `countries` (" +
-					"\n\t`idCountry` int(5) NOT NULL AUTO_INCREMENT,";
-			if (settings.dblookup == false) {		
+					"\n\t`id` int(5) NOT NULL AUTO_INCREMENT,";
+			if (settings.dblookup == false) {
 				for (var i = 0; i < oLength; i++) {
 					var currAttr = options[i];
 					sql += "\n\t`" + options[i] + "` " + columnsAttr[options[i]] + ",";
 				}
-				sql += "\n\tPRIMARY KEY (`idCountry`)";
+				sql += "\n\tPRIMARY KEY (`id`)";
 				sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
 			} else {
 				for (var i = 0; i < oLength; i++) {
 					var currAttr = options[i];
 					if (currAttr != 'languages') {
 					  sql += "\n\t`" + options[i] + "` " + columnsAttrLookupFB[options[i]] + ",";
-					}  
-				}			
-				sql += "\n\tPRIMARY KEY (`idCountry`)";
+					}
+				}
+				sql += "\n\tPRIMARY KEY (`id`)";
 				sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
 				sql += "CREATE TABLE IF NOT EXISTS `country_lang_lnk` (";
 				var currAttr = '';
@@ -223,13 +223,13 @@ $(document).ready(function () {
 				    if (columnsAttrLookupLang[options[i]] != undefined ) {
 					  currAttr = options[i];
 					  sql += "\n\t`" + options[i] + "` " + columnsAttrLookupLang[options[i]] + ",";
-					}  
+					}
 				}
 			    sql += "\n\tPRIMARY KEY (`countryCode`,`languages`)";
 				sql += "\n) ENGINE=MyISAM DEFAULT CHARSET=utf8;\n\n";
-			
+
 			}
-			
+
 			// insert into
 			sql += "INSERT INTO `countries` (";
 			for (var i = 0; i < oLength; i++) {
@@ -251,8 +251,8 @@ $(document).ready(function () {
 				sql = sql.substring(0, sql.length - 2);
 				sql += "),"
 			}
-			sql = sql.substring(0, sql.length - 1);			
-			
+			sql = sql.substring(0, sql.length - 1);
+
 			if (settings.dblookup == true) {
 			  sql += ";\n";
 			  for (var i = 0; i < valuesLength; i++) {
@@ -274,7 +274,7 @@ $(document).ready(function () {
 				xml += " />";
 			}
 			xml += "\n</countries>";
-			
+
 			// set xml code
 			$('#generatedcode').text(xml);
 		} else if (settings.type === "jsontype") {
@@ -320,8 +320,8 @@ $(document).ready(function () {
 					var currAttr = options[i];
 					if (currAttr != 'languages') {
 					  sql += "\n\t " + options[i] + " " + columnsAttrLookupFB[options[i]] + ",";
-					}  
-				}			
+					}
+				}
 			    sql += "\n\tPRIMARY KEY (countryCode)";
 			    sql += "\n);\n\n";
 				sql += "CREATE TABLE  country_lang_lnk (";
@@ -330,16 +330,16 @@ $(document).ready(function () {
 				    if (columnsAttrLookupLang[options[i]] != undefined ) {
 					  currAttr = options[i];
 					  sql += "\n\t " + options[i] + " " + columnsAttrLookupLang[options[i]] + ",";
-					}  
+					}
 				}
 			    sql += "\n\tPRIMARY KEY (countryCode,languages)";
 			    sql += "\n);\n\n";
-				
+
 			}
-  		   
+
 
 			for (var i = 0; i < valuesLength; i++) {
-				
+
 				// insert into
 				sql += "INSERT INTO countries (";
 				for (var it = 0; it < oLength; it++) {
@@ -348,12 +348,12 @@ $(document).ready(function () {
 				}
 				sql = sql.substring(0, sql.length - 2);
 				sql += ") VALUES";
-			
+
 				sql += " ("
 				for (var j = 0; j < oLength; j++) {
 					var currValue = allValues[i][options[j]];
 					if ((settings.dblookup == true) && (options[j] == 'languages')) { continue; }
-					
+
 					if (typeof currValue === "string")
 					  sql += "'" + currValue.replace(/\x27/g, 'x27x27') + "', ";
 					else if (typeof currValue === "number")
@@ -363,11 +363,11 @@ $(document).ready(function () {
 				sql += "); \n"
                 if (settings.dblookup == true) {
 				  sql += generateLookupScript(i);
-				}  
-				
-			} 
+				}
+
+			}
 			sql = sql.substring(0, sql.length - 1);
-			
+
 			// set sql code
 			$('#generatedcode').text(sql);
 	    } else if (settings.type === "csvtype") {
@@ -376,7 +376,7 @@ $(document).ready(function () {
 				var currOption = options[j];
 				csv += "\"" + currOption + "\",";
 			}
-			csv = csv.substring(0, csv.length - 1);			
+			csv = csv.substring(0, csv.length - 1);
 			csv += "\n";
 			for (var i = 0; i < valuesLength; i++) {
 				for (var j = 0; j < oLength; j++) {
@@ -386,7 +386,7 @@ $(document).ready(function () {
 				csv = csv.substring(0, csv.length - 1);
 				csv += "\n";
 			}
-			
+
 			// set csv code
      	   $('#generatedcode').text(csv);
       } else if (settings.type === "yamltype") {
@@ -402,9 +402,11 @@ $(document).ready(function () {
               yaml += "\n      " + currOption + ": " + currValue;
             }
           }
-          
+
           // set yaml code
           $('#generatedcode').text(yaml);
       }
-    }		
+    }
+
+	$('#generatecode').click();
 });

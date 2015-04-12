@@ -7,139 +7,207 @@
 <meta name="description" content="Get countries list from geonames">
 <meta name="author" content="Drazen Peric">
 <meta name="keywords" content="countries, list, mysql,firebird, geonames, xml">
-<title>Get countries in MySQL/Firebird/XML format</title>
-<link rel="stylesheet" href="css/bootstrap.min.css" />
-<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<title>Generate countries list in various formats</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
 <link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
-	<div id="container" class="container-fluid">
-		<div class="navbar">
-			<div class="navbar-inner">
-				<h2>Get countries</h2>
-			</div>
-		</div>
-		<div class="row-fluid">
-			<div class="span12" id="inner-container">
-				<p class="lead">Generates Countries table based on the selected fields. Supports <strong>MySQL</strong>, <strong>Firebird</strong>, <strong>XML</strong>, <strong>JSON</strong> and <strong>CSV</strong>.</p>
-				<p>
-					<a id="showexamplecode" href="#">MySQL Example code</a>
-				</p>
-				<p>
-					<code id="examplecode">
-						CREATE TABLE IF NOT EXISTS `countries` (<br />
-						&emsp;&emsp;&emsp;&emsp;`idCountry` int(5) NOT NULL AUTO_INCREMENT,<br />
-						&emsp;&emsp;&emsp;&emsp;`countryCode` char(2) NOT NULL DEFAULT '',<br />
-						&emsp;&emsp;&emsp;&emsp;`countryName` varchar(80) NOT NULL DEFAULT '',<br />
-						&emsp;&emsp;&emsp;&emsp;PRIMARY KEY (`idCountry`)<br />
-						) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;<br /><br />
+	<div class="jumbotron">
+		<div class="container">
+			<h1>getCountries()</h1>
+			<p><strong>MySQL</strong>, <strong>Firebird</strong>, <strong>XML</strong>, <strong>JSON</strong>, <strong>CSV</strong> and <strong>YAML</strong> generator for custom Countries data. In the textarea below, you can see pre-generated output for MySQL table. All the data is fetched from <a href="http://www.geonames.org" target="_blank">geonames.org</a></p>
+			<p>
+				<a id="showexamplecode" href="#">MySQL output example</a>
+			</p>
+			<p>
+				<code id="examplecode" class="examplecode">
+					CREATE TABLE IF NOT EXISTS `countries` (<br />
+					&emsp;&emsp;&emsp;&emsp;`idCountry` int(5) NOT NULL AUTO_INCREMENT,<br />
+					&emsp;&emsp;&emsp;&emsp;`countryCode` char(2) NOT NULL DEFAULT '',<br />
+					&emsp;&emsp;&emsp;&emsp;`countryName` varchar(80) NOT NULL DEFAULT '',<br />
+					&emsp;&emsp;&emsp;&emsp;PRIMARY KEY (`idCountry`)<br />
+					) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;<br /><br />
 
-						INSERT INTO `countries` (`countryCode`, `countryName`) VALUES<br />
-						('AD', 'Andorra'),<br />
-						('AE', 'United Arab Emirates'),<br />
-						('AF', 'Afghanistan')<br />
-						.<br />
-						.<br />
-						.
-					</code>
-				</p>
-				<hr/>
-				<h5>Select columns:</h5>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="countryCode" checked="checked">countryCode
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="countryName" checked="checked">countryName
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="currencyCode">currencyCode
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="population">population
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="fipsCode">fipsCode
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="isoNumeric">isoNumeric
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="north">north
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="south">south
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="east">east
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="west">west
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="capital">capital
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="continentName">continentName
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="continent">continent
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="areaInSqKm">areaInSqKm
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="languages">languages
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="isoAlpha3">isoAlpha3
-				</label>
-				<label class="checkbox">
-					<input type="checkbox" class="options" name="options" value="geonameId">geonameId
-				</label>
-				<h5>Select type:</h5>
-				<label class="radio">
-					<input type="radio" class="codetype" name="codetype" id="mysqltype" value="mysqltype" checked>
-					MySQL
-				</label>
-				<label class="radio">
-					<input type="radio" class="codetype" name="codetype" id="firebirdtype" value="firebirdtype">
-					Firebird
-				</label>				
-				<label class="radio">
-					<input type="radio" class="codetype" name="codetype" id="xmltype" value="xmltype">
-					XML
-				</label>
-				<label class="radio">
-					<input type="radio" class="codetype" name="codetype" id="jsontype" value="jsontype">
-					JSON
-				</label>
-				<label class="radio">
-					<input type="radio" class="codetype" name="codetype" id="csvtype" value="csvtype">
-					CSV
-				</label>
-				<label class="radio">
-					<input type="radio" class="codetype" name="codetype" id="yamltype" value="yamltype">
-					YAML
-				</label>
-				<h5>Database Additional Options</h5>
-				<label class="radio">
-					<input type="checkbox" class="dblookup" name="dblookup" id="dblookup" value="dblookup" >
-					Language Lookup tables
-				</label>				
-									
-				<p>
-					<button id="getcode" class="btn btn-primary" type="button">Get it!</button>
-				</p>
-				<hr />
-				<textarea id="generatedcode" rows="20"></textarea>
-				<hr />
-				<div id="signature">
-					Web by <a href="http://echobehind.wordpress.com" target="_blank"><span class="dp">DP</span></a>
+					INSERT INTO `countries` (`countryCode`, `countryName`) VALUES<br />
+					('AD', 'Andorra'),<br />
+					('AE', 'United Arab Emirates'),<br />
+					('AF', 'Afghanistan')<br />
+					.<br />
+					.<br />
+					.
+				</code>
+			</p>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-4">
+				<h3>Columns</h3>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="countryCode" checked="checked">
+						countryCode
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="countryName" checked="checked">
+						countryName
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="currencyCode">
+						currencyCode
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="population">
+						population
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="fipsCode">
+						fipsCode
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="isoNumeric">
+						isoNumeric
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="north">
+						north
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="south">
+						south
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="east">
+						east
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="west">
+						west
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="capital">
+						capital
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="continentName">
+						continentName
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="continent">
+						continent
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="areaInSqKm">
+						areaInSqKm
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="languages">
+						languages
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="isoAlpha3">
+						isoAlpha3
+					</label>
+				</div>
+				<div class="checkbox">
+					<label>
+						<input type="checkbox" class="options" name="options" value="geonameId">
+						geonameId
+					</label>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<h3>Additional options</h3>
+				<div class="checkbox">
+					<label>
+						<input id="dblookup" type="checkbox" class="dblookup" name="dblookup" value="dblookup">
+						Language Lookup tables
+					</label>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<h3>Output type</h3>
+				<div class="radio">
+					<label>
+						<input type="radio" class="codetype" name="codetype" id="mysqltype" value="mysqltype" checked>
+						MySQL
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" class="codetype" name="codetype" id="firebirdtype" value="firebirdtype">
+						Firebird
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" class="codetype" name="codetype" id="xmltype" value="xmltype">
+						XML
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" class="codetype" name="codetype" id="jsontype" value="jsontype">
+						JSON
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" class="codetype" name="codetype" id="csvtype" value="csvtype">
+						CSV
+					</label>
+				</div>
+				<div class="radio">
+					<label>
+						<input type="radio" class="codetype" name="codetype" id="yamltype" value="yamltype">
+						YAML
+					</label>
 				</div>
 			</div>
 		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<p class="text-center">
+					<button id="generatecode" class="btn btn-primary btn-lg" type="button">Generate</button>
+				</p>
+			</div>
+			<textarea id="generatedcode" class="generatedcode" rows="30"></textarea>
+		</div>
 	</div>
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+	<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="js/functions.js"></script>
 </body>
 </html>
