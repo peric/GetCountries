@@ -194,7 +194,8 @@ $(document).ready(function () {
 		var sqlLkp = "";
 		var xml = "";
 		var json = "";
-		var csv = "";		
+		var csv = "";
+		var yaml = "";
 
 		if (settings.type === "mysqltype") {
 			// create table
@@ -388,6 +389,22 @@ $(document).ready(function () {
 			
 			// set csv code
      	   $('#generatedcode').text(csv);
-        }
+      } else if (settings.type === "yamltype") {
+          yaml += "---";
+          yaml += "\ncountries:";
+          yaml += "\n  country:";
+          for (var i = 0; i < valuesLength; i++) {
+          	yaml += "\n    -";
+            for (var j = 0; j < oLength; j++) {
+              var currOption = options[j];
+              var currValue = allValues[i][options[j]];
+
+              yaml += "\n      " + currOption + ": " + currValue;
+            }
+          }
+          
+          // set yaml code
+          $('#generatedcode').text(yaml);
+      }
     }		
 });
