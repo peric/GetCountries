@@ -1,30 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Get countries list from geonames">
-<meta name="author" content="Drazen Peric">
-<meta name="keywords" content="countries, list, mysql,firebird, geonames, xml">
-<title>Generate countries list in various formats</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
-<script type="text/javascript">
+    <meta charset="utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get countries list from geonames">
+    <meta name="author" content="Drazen Peric">
+    <meta name="keywords" content="countries, list, mysql, firebird, geonames, xml, csv, yaml">
+    <title>getCountries()</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <script src="https://fb.me/react-0.13.1.js"></script>
+    <script src="https://fb.me/JSXTransformer-0.13.1.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-35038390-1']);
+      _gaq.push(['_trackPageview']);
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-35038390-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
 </head>
 <body>
 	<a href="https://github.com/peric/GetCountries"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
@@ -32,30 +31,30 @@
 		<div class="container">
 			<h1>getCountries()</h1>
 			<p><strong>MySQL</strong>, <strong>Firebird</strong>, <strong>XML</strong>, <strong>JSON</strong>, <strong>CSV</strong> and <strong>YAML</strong> generator for custom Countries data. In the textarea below, you can see pre-generated output for MySQL table. All the data is fetched from <a href="http://www.geonames.org" target="_blank">geonames.org</a></p>
-			<p>
-				<a id="showexamplecode" href="#">MySQL output example</a>
-			</p>
-			<p>
-				<code id="examplecode" class="examplecode">
-					CREATE TABLE IF NOT EXISTS `countries` (<br />
-					&emsp;&emsp;&emsp;&emsp;`idCountry` int(5) NOT NULL AUTO_INCREMENT,<br />
-					&emsp;&emsp;&emsp;&emsp;`countryCode` char(2) NOT NULL DEFAULT '',<br />
-					&emsp;&emsp;&emsp;&emsp;`countryName` varchar(80) NOT NULL DEFAULT '',<br />
-					&emsp;&emsp;&emsp;&emsp;PRIMARY KEY (`idCountry`)<br />
-					) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;<br /><br />
+			<!--<p>-->
+				<!--<a id="showexamplecode" href="#">MySQL output example</a>-->
+			<!--</p>-->
+			<!--<p>-->
+				<!--<code id="examplecode" class="examplecode">-->
+					<!--CREATE TABLE IF NOT EXISTS `countries` (<br />-->
+					<!--&emsp;&emsp;&emsp;&emsp;`idCountry` int(5) NOT NULL AUTO_INCREMENT,<br />-->
+					<!--&emsp;&emsp;&emsp;&emsp;`countryCode` char(2) NOT NULL DEFAULT '',<br />-->
+					<!--&emsp;&emsp;&emsp;&emsp;`countryName` varchar(80) NOT NULL DEFAULT '',<br />-->
+					<!--&emsp;&emsp;&emsp;&emsp;PRIMARY KEY (`idCountry`)<br />-->
+					<!--) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;<br /><br />-->
 
-					INSERT INTO `countries` (`countryCode`, `countryName`) VALUES<br />
-					('AD', 'Andorra'),<br />
-					('AE', 'United Arab Emirates'),<br />
-					('AF', 'Afghanistan')<br />
-					.<br />
-					.<br />
-					.
-				</code>
-			</p>
+					<!--INSERT INTO `countries` (`countryCode`, `countryName`) VALUES<br />-->
+					<!--('AD', 'Andorra'),<br />-->
+					<!--('AE', 'United Arab Emirates'),<br />-->
+					<!--('AF', 'Afghanistan')<br />-->
+					<!--.<br />-->
+					<!--.<br />-->
+					<!--.-->
+				<!--</code>-->
+			<!--</p>-->
 		</div>
 	</div>
-	<div class="container">
+	<div id="content" class="container">
 		<div class="row">
 			<div class="col-md-4">
 				<h3>Columns</h3>
@@ -213,6 +212,8 @@
 		</div>
 		<div class="row">
 			<div class="col-md-12">
+                TODO: You selected: bla bla bla
+
 				<p class="text-center">
 					<button id="generatecode" class="btn btn-primary btn-lg" type="button">Generate</button>
 				</p>
@@ -220,9 +221,6 @@
 			<textarea id="generatedcode" class="generatedcode" rows="30"></textarea>
 		</div>
 	</div>
-	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/functions.js"></script>
+    <script type="text/jsx" src="js/app.js"></script>
 </body>
 </html>
