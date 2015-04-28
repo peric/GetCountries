@@ -70,17 +70,18 @@ $(document).ready(function () {
         $('#examplecode').toggle();
     })
 
-    $('.options').change(function () {
-        if ($('.options:checked').length < 1) {
-            $(this).attr('checked', 'checked');
-        }
-    });
+//    $('.options').change(function () {
+//        if ($('.options:checked').length < 1) {
+//            $(this).attr('checked', 'checked');
+//        }
+//    });
 
-    $('#dblookup').click(function (e) {
-        if ($('#dblookup').attr('checked')) {
-            $('.options[value=languages]').attr('checked', 'checked');
-        }
-    });
+//    $('#dblookup').click(function (e) {
+//        if ($('#dblookup').attr('checked')) {
+//            $('.options[value=languages]').attr('checked', 'checked');
+//        }
+//    });
+
     $('#generatecode').click(function () {
         allValues = [];
         options = [];
@@ -91,26 +92,27 @@ $(document).ready(function () {
                 options.push($(this).val());
             }
         });
-        if ($('#dblookup').attr('checked')) {
-            if (!$('.options[value=languages]').attr('checked')) {
-                options.push('languages');
-            }
-        }
 
-        $('.codetype').each(function () {
-            var $this = $(this);
-            if ($this.is(':checked'))
-                settings.type = $this.val();
-        });
+//        if ($('#dblookup').attr('checked')) {
+//            if (!$('.options[value=languages]').attr('checked')) {
+//                options.push('languages');
+//            }
+//        }
 
-        $('.dblookup').each(function () {
-            var $this = $(this);
-            if ($this.is(':checked')) {
-                settings.dblookup = true;
-            } else {
-                settings.dblookup = false;
-            }
-        });
+//        $('.codetype').each(function () {
+//            var $this = $(this);
+//            if ($this.is(':checked'))
+//                settings.type = $this.val();
+//        });
+
+//        $('.dblookup').each(function () {
+//            var $this = $(this);
+//            if ($this.is(':checked')) {
+//                settings.dblookup = true;
+//            } else {
+//                settings.dblookup = false;
+//            }
+//        });
 
         fetchCountries();
     });

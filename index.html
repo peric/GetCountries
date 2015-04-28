@@ -55,156 +55,166 @@
 		</div>
 	</div>
 	<div id="content" class="container">
+
 		<div class="row">
 			<div class="col-md-4">
 				<h3>Columns</h3>
+
+                <!--TODO: this will be rendered from the array-->
+
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="countryCode" checked="checked">
+						<input type="checkbox" class="column" name="column" value="countryCode" checked="checked">
 						countryCode
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="countryName" checked="checked">
+						<input type="checkbox" class="column" name="column" value="countryName" checked="checked">
 						countryName
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="currencyCode">
+						<input type="checkbox" class="column" name="column" value="currencyCode">
 						currencyCode
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="population">
+						<input type="checkbox" class="column" name="column" value="population">
 						population
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="fipsCode">
+						<input type="checkbox" class="column" name="column" value="fipsCode">
 						fipsCode
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="isoNumeric">
+						<input type="checkbox" class="column" name="column" value="isoNumeric">
 						isoNumeric
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="north">
+						<input type="checkbox" class="column" name="column" value="north">
 						north
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="south">
+						<input type="checkbox" class="column" name="column" value="south">
 						south
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="east">
+						<input type="checkbox" class="column" name="column" value="east">
 						east
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="west">
+						<input type="checkbox" class="column" name="column" value="west">
 						west
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="capital">
+						<input type="checkbox" class="column" name="column" value="capital">
 						capital
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="continentName">
+						<input type="checkbox" class="column" name="column" value="continentName">
 						continentName
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="continent">
+						<input type="checkbox" class="column" name="column" value="continent">
 						continent
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="areaInSqKm">
+						<input type="checkbox" class="column" name="column" value="areaInSqKm">
 						areaInSqKm
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="languages">
+						<input type="checkbox" class="column" name="column" value="languages">
 						languages
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="isoAlpha3">
+						<input type="checkbox" class="column" name="column" value="isoAlpha3">
 						isoAlpha3
 					</label>
 				</div>
 				<div class="checkbox">
 					<label>
-						<input type="checkbox" class="options" name="options" value="geonameId">
+						<input type="checkbox" class="column" name="column" value="geonameId">
 						geonameId
 					</label>
 				</div>
 			</div>
 			<div class="col-md-4">
-				<h3>Additional options</h3>
+				<h3>Settings</h3>
+
+                <!--TODO: this will be rendered from the array-->
+
 				<div class="checkbox">
 					<label>
-						<input id="dblookup" type="checkbox" class="dblookup" name="dblookup" value="dblookup">
+						<input type="checkbox" class="options" name="options" value="dblookup">
 						Language Lookup tables
 					</label>
 				</div>
 			</div>
 			<div class="col-md-4">
 				<h3>Output type</h3>
+
+                <!--TODO: this will be rendered from the array-->
+
 				<div class="radio">
 					<label>
-						<input type="radio" class="codetype" name="codetype" id="mysqltype" value="mysqltype" checked>
+						<input type="radio" class="output" name="output" id="mysqltype" value="mysqltype" checked>
 						MySQL
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input type="radio" class="codetype" name="codetype" id="firebirdtype" value="firebirdtype">
+						<input type="radio" class="output" name="output" id="firebirdtype" value="firebirdtype">
 						Firebird
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input type="radio" class="codetype" name="codetype" id="xmltype" value="xmltype">
+						<input type="radio" class="output" name="output" id="xmltype" value="xmltype">
 						XML
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input type="radio" class="codetype" name="codetype" id="jsontype" value="jsontype">
+						<input type="radio" class="output" name="output" id="jsontype" value="jsontype">
 						JSON
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input type="radio" class="codetype" name="codetype" id="csvtype" value="csvtype">
+						<input type="radio" class="output" name="output" id="csvtype" value="csvtype">
 						CSV
 					</label>
 				</div>
 				<div class="radio">
 					<label>
-						<input type="radio" class="codetype" name="codetype" id="yamltype" value="yamltype">
+						<input type="radio" class="output" name="output" id="yamltype" value="yamltype">
 						YAML
 					</label>
 				</div>
