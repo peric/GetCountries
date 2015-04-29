@@ -82,6 +82,8 @@ $(document).ready(function () {
 //        }
 //    });
 
+
+
     $('#generatecode').click(function () {
         allValues = [];
         options = [];

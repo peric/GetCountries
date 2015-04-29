@@ -30,6 +30,8 @@ var columns = [
     { name: 'geonameId', mysql: "int(10) DEFAULT NULL", firebird: "integer DEFAULT NULL", checked: false }
 ];
 
+// TODO: add additional stuff (YAML, CSV etc) to columns array
+
 //var columnsAttrLookupLang = {
 //    'countryCode': "char(3) NOT NULL",
 //    'languages': "varchar(10) NOT NULL",
@@ -55,28 +57,72 @@ var outputTypes = [
 
 // TODO: after click, generate code based on selected options
 
+// TODO: return ColumnsList, SettingsList and OutputsList into one row
+// TODO: return button into second row
+// TODO: return textarea with result into fourth row
+//        <div className="commentBox">
+//            <h1>Comments</h1>
+//            <CommentList />
+//            <CommentForm />
+//        </div>
+
 var GeneratorApp = React.createClass({
-    getInitialState: function () {
-        // TODO: return
-    },
-
-    render: function () {
-        // TODO: define additional function
-        // TODO: return something that calls additional function
-
-        // TODO: return options and result
-
-        // TODO: return them into container
+    render: function() {
+        return (
+            <div className="row">
+                <ColumnsList />
+                <SettingsList />
+                <OutputsList />
+            </div>
+        );
     }
 });
 
-React.renderComponent(
-    <GeneratorApp options= { options } />,
-    document.body
-);
+var ColumnsList = React.createClass({
+    // TODO: generates html output for columns
+    render: function() {
+        var createColumn = function(item, index) {
+            return (
+                <div className="checkbox">
+                    <label>
+                        <input type="checkbox" class="column" name="column">
+                            {item.name}
+                        </input>
+                    </label>
+                </div>
+            );
+        };
+        return (
+            <div className="col-md-4">
+                {columns.map(createColumn)}
+            </div>
+        );
+    }
+});
 
-//var GeneratorOptions = React.createClass({
-//    render: function() {
-//
-//    }
-//});
+var SettingsList = React.createClass({
+    // TODO: generates html output for settings
+    render: function() {
+        return (
+            <div className="col-md-4">
+                2
+            </div>
+        );
+    }
+});
+
+var OutputsList = React.createClass({
+    // TODO: generates html output for outputs
+    render: function() {
+        return (
+            <div className="col-md-4">
+                3
+            </div>
+        );
+    }
+});
+
+React.render(
+    <GeneratorApp />,
+    document.getElementById('content')
+);
