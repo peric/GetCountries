@@ -88,6 +88,7 @@ $(document).ready(function () {
         allValues = [];
         options = [];
 
+        // TODO: have that
         $('.options').each(function () {
             var $this = $(this);
             if ($this.is(':checked')) {
@@ -95,20 +96,21 @@ $(document).ready(function () {
             }
         });
 
-
-
+        // TODO: have that
 //        if ($('#dblookup').attr('checked')) {
 //            if (!$('.options[value=languages]').attr('checked')) {
 //                options.push('languages');
 //            }
 //        }
 
+        // TODO: have that also
 //        $('.codetype').each(function () {
 //            var $this = $(this);
 //            if ($this.is(':checked'))
 //                settings.type = $this.val();
 //        });
 
+        // TODO: have that also
 //        $('.dblookup').each(function () {
 //            var $this = $(this);
 //            if ($this.is(':checked')) {

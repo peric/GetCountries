@@ -38,41 +38,122 @@ var outputTypes = [
     { name: 'YAML', checked: false }
 ];
 
-// TODO: keep track of selected options
 // TODO: additional attribute 'languages': "varchar(100) DEFAULT NULL",
 
-// TODO: show example
+// TODO: show example code
 
 // TODO: after click, generate code based on selected options
 
-// TODO: pass properties to ColumnsList and access it with this.props.column, this.props.children etc
 // TODO: use https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js
 
 var GeneratorApp = React.createClass({
-    // TODO: getInitialState, for internal state data
     getInitialState: function() {
         return {
             columns: this.props.columns,
             settings: this.props.settings,
-            outputTypes: this.props.outputTypes
+            outputTypes: this.props.outputTypes,
+            output: ''
         };
     },
-    generateOutput: function(e) {
-        e.preventDefault();
-//        console.log(this.props.outputTypes);
-        console.log(this.props.outputTypes);
+    toggleCheck: function(index, type, data) {
+        // radio buttons are handled different than checkboxes
+        if (type === 'outputTypes') {
+            data[index].checked = true;
+            for (var i=0; i<data.length; i++) {
+                if (i !== index) {
+                    data[i].checked = false;
+                }
+            }
+        } else {
+            data[index].checked = !data[index].checked;
+        }
+
+        this.setState({type: data});
     },
-    // TODO: onChange
+    getOutput: function(e) {
+        e.preventDefault();
+
+        var source = 'http://api.geonames.org/countryInfoJSON?username=dperic';
+        var results = '';
+
+        // this.prepare data
+        // generate
+//        prepareData();
+
+        // fetch and prepare data
+        $.getJSON(source, function(data) {
+            var columns = this.state.columns;
+
+            for (var i=0; i<data.geonames.length; i++) {
+                for (var j=0; j<columns.length; j++) {
+                    if (columns[j].checked) {
+                        console.log(data.geonames[i][columns[j].name]);
+                    }
+                }
+            }
+
+//            this.setState({output: result});
+        }.bind(this));
+
+        console.log(generateOutput());
+//        this.setState({output: results});
+
+        // TODO: generate output
+    },
     render: function() {
+        var self = this;
+        var columns = this.state.columns.map(function(column, index) {
+            return (
+                <Column
+                    key={index + column.name}
+                    index={index}
+                    data={self.state.columns}
+                    name={column.name}
+                    checked={column.checked}
+                    onChange={self.toggleCheck} />
+            )
+        });
+        var settings = this.state.settings.map(function(setting, index) {
+            return (
+                <Setting
+                    key={index + setting.name}
+                    index={index}
+                    data={self.state.settings}
+                    name={setting.name}
+                    longName={setting.longName}
+                    checked={setting.checked}
+                    onChange={self.toggleCheck} />
+            )
+        });
+        var outputTypes = this.state.outputTypes.map(function(outputType, index) {
+            return (
+                <OutputType
+                    key={index + outputType.name}
+                    index={index}
+                    data={self.state.outputTypes}
+                    name={outputType.name}
+                    checked={outputType.checked}
+                    onChange={self.toggleCheck} />
+            )
+        });
         return (
             <div className="GeneratorApp">
                 <div className="row">
-                    <ColumnsList columns={this.props.columns} />
-                    <SettingsList settings={this.props.settings} />
-                    <OutputsList outputTypes={this.props.outputTypes} />
+                    <div className="col-md-4">
+                        <h3>Columns</h3>
+                        {columns}
+                    </div>
+                    <div className="col-md-4">
+                        <h3>Settings</h3>
+                        {settings}
+                    </div>
+                    <div className="col-md-4">
+                        <h3>Output types</h3>
+                        {outputTypes}
+                    </div>
                 </div>
                 <div className="row">
-                    <form onSubmit={this.generateOutput}>
+                    <form onSubmit={this.getOutput}>
                         <p className="text-center">
                             <button className="btn btn-primary btn-lg" type="submit">
                                 Generate
@@ -81,7 +162,12 @@ var GeneratorApp = React.createClass({
                     </form>
                 </div>
                 <div className="row">
-                    <textarea className="generatedcode" rows="30"></textarea>
+                    <textarea
+                        id="outputcode"
+                        className="outputcode"
+                        rows="30"
+                        value={this.state.output}
+                        readOnly="true" />
                 </div>
             </div>
         );
@@ -89,118 +175,90 @@ var GeneratorApp = React.createClass({
 });
 
 var Column = React.createClass({
-    render: function() {
-        // TODO: rewrite app so that every property resides for itself
-        // TODO: properties become states when passed into
-        // TODO: http://jsfiddle.net/martinaglv/mr7gY/light/
-    }
-});
+    handleChange: function(event) {
+        var index = this.props.index,
+            type = event.target.dataset.type,
+            data = this.props.data;
 
-var ColumnsList = React.createClass({
-    handleChange: function(column) {
-        console.log(column);
-//        e.preventDefault();
-//        console.log(e);
-//        console.log(e.target.value);
-        console.log(this.props.columns);
-//        console.log(this.props.columns);
+        this.props.onChange(index, type, data);
     },
     render: function() {
-        var showColumns = this.props.columns.map(function(column, index) {
-            var columnName = column.name;
-            return (
-                <div className="checkbox" key={index + columnName}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            className="column"
-                            name="column"
-                            value={columnName}
-                            checked={column.checked}
-                            onChange={this.handleChange(column)}>
-                                {columnName}
-                        </input>
-                    </label>
-                </div>
-            );
-        }.bind(this));
         return (
-            <div className="col-md-4">
-                <h3>Columns</h3>
-                {showColumns}
+            <div className="checkbox">
+                <label>
+                    <input
+                        type="checkbox"
+                        className="column"
+                        name="column"
+                        data-type="columns"
+                        checked={this.props.checked}
+                        onChange={this.handleChange} />
+                            {this.props.name}
+                </label>
             </div>
         );
     }
 });
 
-var SettingsList = React.createClass({
+var Setting = React.createClass({
+    handleChange: function(event) {
+        var index = this.props.index,
+            type = event.target.dataset.type,
+            data = this.props.data;
+
+        this.props.onChange(index, type, data);
+    },
     render: function() {
-        var showSettings = this.props.settings.map(function(setting, index) {
-            var settingName = setting.name;
-            var checked = setting.checked;
-            return (
-                <div className="checkbox" key={index + settingName}>
-                    <label>
-                        <input
-                            type="checkbox"
-                            className="setting"
-                            name="setting"
-                            value={settingName}
-                            defaultChecked={ checked ? 'checked' : '' }>
-                                {setting.longName}
-                        </input>
-                    </label>
-                </div>
-                );
-        });
         return (
-            <div className="col-md-4">
-                <h3>Settings</h3>
-                {showSettings}
+            <div className="checkbox">
+                <label>
+                    <input
+                        type="checkbox"
+                        className="column"
+                        name="column"
+                        data-type="columns"
+                        checked={this.props.checked}
+                        onChange={this.handleChange} />
+                            {this.props.longName}
+                </label>
             </div>
         );
     }
 });
 
-var OutputsList = React.createClass({
+var OutputType = React.createClass({
+    handleChange: function(event) {
+        var index = this.props.index,
+            type = event.target.dataset.type,
+            data = this.props.data;
+
+        this.props.onChange(index, type, data);
+    },
     render: function() {
-        var showOutputTypes = this.props.outputTypes.map(function(outputType, index) {
-            var outputTypeName = outputType.name;
-            var checked = outputType.checked;
-            return (
-                <div className="radio" key={index + outputTypeName}>
-                    <label>
-                        <input
+        return (
+            <div className="radio">
+                <label>
+                    <input
                         type="radio"
-                        className="output"
-                        name="output"
-                        value={outputTypeName}
-                        defaultChecked={ checked ? 'checked' : '' }>
-                            {outputTypeName}
-                        </input>
-                    </label>
-                </div>
-            );
-        });
-        return (
-            <div className="col-md-4">
-                <h3>Output type</h3>
-                {showOutputTypes}
+                        className="outputType"
+                        name="outputType"
+                        data-type="outputTypes"
+                        checked={this.props.checked}
+                        onChange={this.handleChange} />
+                            {this.props.name}
+                </label>
             </div>
         );
     }
 });
 
-var GenerateOutput = React.createClass({
-    render: function() {
-
-    }
-});
+var generateOutput = function() {
+    return 'test';
+};
 
 React.render(
     <GeneratorApp columns={columns} settings={settings} outputTypes={outputTypes} />,
     document.getElementById('content')
 );
 
-// TODO: reuse same method for rendering all the columns, options and outputs
-// TODO: pass checkbox/radio as parameter
+// TODO: restructure https://facebook.github.io/flux/docs/todo-list.html
