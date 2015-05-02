@@ -148,6 +148,7 @@ $(document).ready(function () {
             generateScript();
         });
     }
+
     var uniqueArray = function (arr) {
         return arr.reduce(function (a, b) {
             if (a.indexOf(b) < 0) a.push(b);

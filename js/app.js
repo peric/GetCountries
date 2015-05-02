@@ -1,3 +1,10 @@
+var OUTPUT_MYSQL = 'MySQL',
+    OUTPUT_FIREBIRD = 'Firebird',
+    OUTPUT_XML = 'XML',
+    OUTPUT_JSON = 'JSON',
+    OUTPUT_CSV = 'CSV',
+    OUTPUT_YAML = 'YAML';
+
 var columns = [
     { name: 'countryCode', mysql: "char(2) NOT NULL DEFAULT ''", firebird: "char(3) NOT NULL", checked: true },
     { name: 'countryName', mysql: "varchar(45) NOT NULL DEFAULT ''", firebird: "varchar(45) NOT NULL", checked: true },
@@ -30,12 +37,12 @@ var settings = [
 ];
 
 var outputTypes = [
-    { name: 'MySQL', checked: true },
-    { name: 'Firebird', checked: false },
-    { name: 'XML', checked: false },
-    { name: 'JSON', checked: false },
-    { name: 'CSV', checked: false },
-    { name: 'YAML', checked: false }
+    { name: OUTPUT_MYSQL, checked: true },
+    { name: OUTPUT_FIREBIRD, checked: false },
+    { name: OUTPUT_XML, checked: false },
+    { name: OUTPUT_JSON, checked: false },
+    { name: OUTPUT_CSV, checked: false },
+    { name: OUTPUT_YAML, checked: false }
 ];
 
 // TODO: additional attribute 'languages': "varchar(100) DEFAULT NULL",
@@ -52,6 +59,7 @@ var GeneratorApp = React.createClass({
             columns: this.props.columns,
             settings: this.props.settings,
             outputTypes: this.props.outputTypes,
+            outputType: OUTPUT_MYSQL,
             output: ''
         };
     },
@@ -64,6 +72,7 @@ var GeneratorApp = React.createClass({
                     data[i].checked = false;
                 }
             }
+            this.setState({outputType: data[index].name});
         } else {
             data[index].checked = !data[index].checked;
         }
@@ -73,32 +82,31 @@ var GeneratorApp = React.createClass({
     getOutput: function(e) {
         e.preventDefault();
 
+        // TODO: show loader on button
+
         var source = 'http://api.geonames.org/countryInfoJSON?username=dperic';
-        var results = '';
+        var filteredData = [];
+        var columns = this.state.columns;
+        var options = this.state.options;
+        var outputType = this.state.outputType;
 
-        // this.prepare data
-        // generate
-//        prepareData();
-
-        // fetch and prepare data
         $.getJSON(source, function(data) {
-            var columns = this.state.columns;
-
             for (var i=0; i<data.geonames.length; i++) {
+                var columnValue = {};
+
                 for (var j=0; j<columns.length; j++) {
                     if (columns[j].checked) {
-                        console.log(data.geonames[i][columns[j].name]);
+                        var columnName = columns[j].name;
+
+                        columnValue[columnName] = data.geonames[i][columnName];
                     }
                 }
+
+                filteredData.push(columnValue);
             }
-
-//            this.setState({output: result});
+        }).done(function() {
+            this.setState({'output': generateOutput(outputType, columns, options, filteredData) });
         }.bind(this));
-
-        console.log(generateOutput());
-//        this.setState({output: results});
-
-        // TODO: generate output
     },
     render: function() {
         var self = this;
@@ -252,8 +260,42 @@ var OutputType = React.createClass({
     }
 });
 
-var generateOutput = function() {
-    return 'test';
+var generateOutput = function(outputType, columns, options, data) {
+    var output = '';
+
+    switch (outputType) {
+        case OUTPUT_MYSQL:
+            // TODO: check options dblookup
+
+            var sqlColumns = "";
+
+            output =
+                "CREATE TABLE IF NOT EXISTS `countries` (\n" +
+                "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
+                "{0}" +
+                "    PRIMARY KEY (`id`)\n" +
+                ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
+
+            for (var i=0; i<columns.length; i++) {
+                if (columns[i].checked) {
+                    sqlColumns += "    `" + columns[i].name + "` " + columns[i].mysql + ",\n";
+                }
+            }
+
+
+            output = output.format(sqlColumns);
+
+
+//            output = "{0} is dead, but {1} is alive! {0} {2}".format(sqlColumns);
+            break;
+        default:
+            console.log('Something went wrong');
+            break;
+    }
+
+//    "{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET")
+
+    return output;
 };
 
 React.render(

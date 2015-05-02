@@ -5,4 +5,5 @@
     outputCode.onfocus = function() {
         this.select();
     };
+
 })();
