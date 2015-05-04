@@ -27,6 +27,10 @@ var columns = [
 
 // TODO: add additional stuff (YAML, CSV etc) to columns array
 
+// TODO: when lookup tables is selected, select also languages
+
+// TODO: lookup tables can be just with some types - mysql, firebird
+
 //var columnsAttrLookupLang = {
 //    'countryCode': "char(3) NOT NULL",
 //    'languages': "varchar(10) NOT NULL",
@@ -51,8 +55,6 @@ var outputTypes = [
 
 // TODO: after click, generate code based on selected options
 
-// TODO: use https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.2/marked.min.js
-
 var GeneratorApp = React.createClass({
     getInitialState: function() {
         return {
@@ -62,6 +64,9 @@ var GeneratorApp = React.createClass({
             outputType: OUTPUT_MYSQL,
             output: ''
         };
+    },
+    componentDidMount: function() {
+        this.getOutput();
     },
     toggleCheck: function(index, type, data) {
         // radio buttons are handled different than checkboxes
@@ -80,32 +85,21 @@ var GeneratorApp = React.createClass({
         this.setState({type: data});
     },
     getOutput: function(e) {
-        e.preventDefault();
-
+        if (e) {
+            e.preventDefault();
+        }
         // TODO: show loader on button
 
         var source = 'http://api.geonames.org/countryInfoJSON?username=dperic';
-        var filteredData = [];
         var columns = this.state.columns;
         var options = this.state.options;
         var outputType = this.state.outputType;
 
-        $.getJSON(source, function(data) {
-            for (var i=0; i<data.geonames.length; i++) {
-                var columnValue = {};
+        $.getJSON(source)
+            .done(function(data) {
+                var geonamesData = data.geonames;
 
-                for (var j=0; j<columns.length; j++) {
-                    if (columns[j].checked) {
-                        var columnName = columns[j].name;
-
-                        columnValue[columnName] = data.geonames[i][columnName];
-                    }
-                }
-
-                filteredData.push(columnValue);
-            }
-        }).done(function() {
-            this.setState({'output': generateOutput(outputType, columns, options, filteredData) });
+                this.setState({'output': generateOutput(outputType, columns, options, geonamesData) });
         }.bind(this));
     },
     render: function() {
@@ -161,7 +155,7 @@ var GeneratorApp = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <form onSubmit={this.getOutput}>
+                    <form id="generateForm" onSubmit={this.getOutput}>
                         <p className="text-center">
                             <button className="btn btn-primary btn-lg" type="submit">
                                 Generate
@@ -261,39 +255,128 @@ var OutputType = React.createClass({
 });
 
 var generateOutput = function(outputType, columns, options, data) {
-    var output = '';
+    var output = "";
+    var selectedColumns = [];
+
+    for (var i=0; i<columns.length; i++) {
+        if (columns[i].checked) {
+            selectedColumns.push(columns[i]);
+        }
+    }
+
+    // TODO: check options dblookup
 
     switch (outputType) {
         case OUTPUT_MYSQL:
             // TODO: check options dblookup
-
-            var sqlColumns = "";
+            var columnsDefinition = "";
+            var insertStatement = "";
 
             output =
                 "CREATE TABLE IF NOT EXISTS `countries` (\n" +
-                "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
-                "{0}" +
-                "    PRIMARY KEY (`id`)\n" +
-                ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n";
+                    "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
+                    "{0}" +
+                    "    PRIMARY KEY (`id`)\n" +
+                    ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
+                    "{1}";
 
-            for (var i=0; i<columns.length; i++) {
-                if (columns[i].checked) {
-                    sqlColumns += "    `" + columns[i].name + "` " + columns[i].mysql + ",\n";
+            // TODO: write this better - do not repeat?
+            // insert statement
+            insertStatement = "INSERT INTO `countries` (";
+            for (var i=0; i<selectedColumns.length; i++) {
+                var columnName = selectedColumns[i].name;
+                var mysqlCode = selectedColumns[i].mysql;
+
+                columnsDefinition += "    `" + columnName + "` " + mysqlCode + ",\n";
+                insertStatement += "`" + columnName + "`, ";
+            }
+            insertStatement = insertStatement.substring(0, insertStatement.length - 2);
+            insertStatement += ") VALUES";
+
+            // insert values
+            for (var i=0; i<data.length; i++) {
+                insertStatement += "\n(";
+                for (var j=0; j<selectedColumns.length; j++) {
+                    var columnName = selectedColumns[j].name;
+                    var value = data[i][columnName];
+
+                    if (typeof value === "string")
+                        insertStatement += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
+                    else
+                        insertStatement += value + ", ";
                 }
+                insertStatement = insertStatement.substring(0, insertStatement.length - 2);
+                insertStatement += "),";
+            }
+            insertStatement = insertStatement.substring(0, insertStatement.length - 1);
+
+            output = output.format(columnsDefinition, insertStatement);
+
+            break;
+        case OUTPUT_FIREBIRD:
+            // TODO
+            break;
+        case OUTPUT_XML:
+            var countries = "";
+
+            output =
+                "<countries>\n" +
+                "{0}" +
+                "</countries>";
+
+            for (var i=0; i<data.length; i++) {
+                countries += "    <country";
+                for (var j=0; j<selectedColumns.length; j++) {
+                    var columnName = selectedColumns[j].name;
+                    var value = data[i][columnName];
+
+                    countries += " " + columnName + "=\"" + value + "\"";
+                }
+                countries += "/>\n";
             }
 
+            output = output.format(countries);
 
-            output = output.format(sqlColumns);
+            break;
+        case OUTPUT_JSON:
+            var countries = "";
 
+            output =
+                "{\n" +
+                "    \"countries\": {\n" +
+                "        \"country\": [\n" +
+                "{0}" +
+                "        ]\n" +
+                "    }\n" +
+                "}";
 
-//            output = "{0} is dead, but {1} is alive! {0} {2}".format(sqlColumns);
+            for (var i=0; i<data.length; i++) {
+                countries += "            {\n";
+                for (var j=0; j<selectedColumns.length; j++) {
+                    var columnName = selectedColumns[j].name;
+                    var value = data[i][columnName];
+
+                    countries += "                \"" + columnName + "\": \"" + value + "\",\n";
+                }
+                countries = countries.substring(0, countries.length - 2);
+                countries += "\n            },\n";
+            }
+            countries = countries.substring(0, countries.length - 2);
+            countries += "\n";
+
+            output = output.format(countries);
+
+            break;
+        case OUTPUT_CSV:
+            // TODO:
+            break;
+        case OUTPUT_YAML:
+            // TODO:
             break;
         default:
             console.log('Something went wrong');
             break;
     }
-
-//    "{0} is dead, but {1} is alive! {0} {2}".format("ASP", "ASP.NET")
 
     return output;
 };
