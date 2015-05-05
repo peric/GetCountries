@@ -265,6 +265,8 @@ var generateOutput = function(outputType, columns, options, data) {
     }
 
     // TODO: check options dblookup
+    // TODO: check options dblookup
+    // TODO: check options dblookup
 
     switch (outputType) {
         case OUTPUT_MYSQL:
@@ -368,10 +370,47 @@ var generateOutput = function(outputType, columns, options, data) {
 
             break;
         case OUTPUT_CSV:
-            // TODO:
+            for (var i=0; i<selectedColumns.length; i++) {
+                var columnName = selectedColumns[i].name;
+
+                output += "\"" + columnName + "\",";
+            }
+            output = output.substring(0, output.length - 1);
+            output += "\n";
+
+            for (var i=0; i<data.length; i++) {
+                for (var j=0; j<selectedColumns.length; j++) {
+                    var columnName = selectedColumns[j].name;
+                    var value = data[i][columnName];
+
+                    output += "\"" + value + "\",";
+                }
+                output = output.substring(0, output.length - 1);
+                output += "\n";
+            }
+
             break;
         case OUTPUT_YAML:
-            // TODO:
+            var countries = "";
+
+            output =
+                "---\n" +
+                "countries:\n" +
+                "  country:" +
+                "{0}";
+
+            for (var i=0; i<data.length; i++) {
+                countries += "\n    -";
+                for (var j=0; j<selectedColumns.length; j++) {
+                    var columnName = selectedColumns[j].name;
+                    var value = data[i][columnName];
+
+                    countries += "\n      " + columnName + ": " + value;
+                }
+            }
+
+            output = output.format(countries);
+
             break;
         default:
             console.log('Something went wrong');
