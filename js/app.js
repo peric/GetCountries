@@ -29,7 +29,7 @@ var columns = [
 
 // TODO: when lookup tables is selected, select also languages
 
-// TODO: lookup tables can be just with some types - mysql, firebird
+// TODO: disable lookup tables if it's not for mysql of firebird
 
 //var columnsAttrLookupLang = {
 //    'countryCode': "char(3) NOT NULL",
@@ -258,6 +258,8 @@ var generateOutput = function(outputType, columns, options, data) {
     var output = "";
     var selectedColumns = [];
 
+    // TODO: define countries here
+
     for (var i=0; i<columns.length; i++) {
         if (columns[i].checked) {
             selectedColumns.push(columns[i]);
@@ -272,7 +274,7 @@ var generateOutput = function(outputType, columns, options, data) {
         case OUTPUT_MYSQL:
             // TODO: check options dblookup
             var columnsDefinition = "";
-            var insertStatement = "";
+            var countries = "";
 
             output =
                 "CREATE TABLE IF NOT EXISTS `countries` (\n" +
@@ -284,39 +286,84 @@ var generateOutput = function(outputType, columns, options, data) {
 
             // TODO: write this better - do not repeat?
             // insert statement
-            insertStatement = "INSERT INTO `countries` (";
+            countries = "INSERT INTO `countries` (";
             for (var i=0; i<selectedColumns.length; i++) {
                 var columnName = selectedColumns[i].name;
                 var mysqlCode = selectedColumns[i].mysql;
 
                 columnsDefinition += "    `" + columnName + "` " + mysqlCode + ",\n";
-                insertStatement += "`" + columnName + "`, ";
+                countries += "`" + columnName + "`, ";
             }
-            insertStatement = insertStatement.substring(0, insertStatement.length - 2);
-            insertStatement += ") VALUES";
+            countries = countries.substring(0, countries.length - 2);
+            countries += ") VALUES";
 
             // insert values
             for (var i=0; i<data.length; i++) {
-                insertStatement += "\n(";
+                countries += "\n(";
                 for (var j=0; j<selectedColumns.length; j++) {
                     var columnName = selectedColumns[j].name;
                     var value = data[i][columnName];
 
                     if (typeof value === "string")
-                        insertStatement += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
+                        countries += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
                     else
-                        insertStatement += value + ", ";
+                        countries += value + ", ";
                 }
-                insertStatement = insertStatement.substring(0, insertStatement.length - 2);
-                insertStatement += "),";
+                countries = countries.substring(0, countries.length - 2);
+                countries += "),";
             }
-            insertStatement = insertStatement.substring(0, insertStatement.length - 1);
+            countries = countries.substring(0, countries.length - 1);
 
-            output = output.format(columnsDefinition, insertStatement);
+            output = output.format(columnsDefinition, countries);
 
             break;
         case OUTPUT_FIREBIRD:
-            // TODO
+            // TODO: lookup
+
+            var columnsDefinition = "";
+            var insertStatement = "";
+            var countries = "";
+
+            output =
+                "CREATE TABLE countries (\n" +
+                "    id int not null primary key,\n" +
+                "{0}" +
+                ");\n\n" +
+                "{1}";
+
+            // TODO: write this better - do not repeat?
+            // insert statement
+            insertStatement = "INSERT INTO countries (";
+            for (var i=0; i<selectedColumns.length; i++) {
+                var columnName = selectedColumns[i].name;
+                var firebirdCode = selectedColumns[i].firebird;
+
+                columnsDefinition += "    " + columnName + " " + firebirdCode + ",\n";
+                insertStatement += columnName + ", ";
+            }
+            insertStatement = insertStatement.substring(0, insertStatement.length - 2);
+            insertStatement += ") VALUES {0}";
+
+            // insert values
+            for (var i=0; i<data.length; i++) {
+                var country = "(";
+                for (var j=0; j<selectedColumns.length; j++) {
+                    var columnName = selectedColumns[j].name;
+                    var value = data[i][columnName];
+
+                    if (typeof value === "string")
+                        country += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
+                    else
+                        country += value + ", ";
+                }
+                country = country.substring(0, country.length - 2);
+                country += ");\n";
+                countries += insertStatement.format(country);
+            }
+            countries = countries.substring(0, countries.length - 1);
+
+            output = output.format(columnsDefinition, countries);
+
             break;
         case OUTPUT_XML:
             var countries = "";
