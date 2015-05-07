@@ -5,25 +5,25 @@ var OUTPUT_MYSQL = 'MySQL',
     OUTPUT_CSV = 'CSV',
     OUTPUT_YAML = 'YAML';
 
-var columns = [
-    { name: 'countryCode', mysql: "char(2) NOT NULL DEFAULT ''", firebird: "char(3) NOT NULL", checked: true },
-    { name: 'countryName', mysql: "varchar(45) NOT NULL DEFAULT ''", firebird: "varchar(45) NOT NULL", checked: true },
-    { name: 'currencyCode', mysql: "char(3) DEFAULT NULL", firebird: "char(3) DEFAULT NULL", checked: false },
-    { name: 'population', mysql: "varchar(20) DEFAULT NULL", firebird: "varchar(20) DEFAULT NULL", checked: false },
-    { name: 'fipsCode', mysql: "char(2) DEFAULT NULL", firebird: "char(2) DEFAULT NULL", checked: false },
-    { name: 'isoNumeric', mysql: "char(4) DEFAULT NULL", firebird: "char(4) DEFAULT NULL", checked: false },
-    { name: 'north', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    { name: 'south', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    { name: 'east', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    { name: 'west', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    { name: 'capital', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    { name: 'continentName', mysql: "varchar(15) DEFAULT NULL", firebird: "varchar(15) DEFAULT NULL", checked: false },
-    { name: 'continent', mysql: "char(2) DEFAULT NULL", firebird: "char(2) DEFAULT NULL", checked: false },
-    { name: 'areaInSqKm', mysql: "varchar(20) DEFAULT NULL", firebird: "varchar(20) DEFAULT NULL", checked: false },
-    { name: 'languages', mysql: "varchar(100) DEFAULT NULL", firebird: "varchar(100) DEFAULT NULL", checked: false },
-    { name: 'isoAlpha3', mysql: "char(3) DEFAULT NULL", firebird: "char(3) DEFAULT NULL", checked: false },
-    { name: 'geonameId', mysql: "int(10) DEFAULT NULL", firebird: "integer DEFAULT NULL", checked: false }
-];
+var columns = {
+    'countryCode': { name: 'countryCode', mysql: "char(2) NOT NULL DEFAULT ''", firebird: "char(3) NOT NULL", checked: true },
+    'countryName': { name: 'countryName', mysql: "varchar(45) NOT NULL DEFAULT ''", firebird: "varchar(45) NOT NULL", checked: true },
+    'currencyCode': { name: 'currencyCode', mysql: "char(3) DEFAULT NULL", firebird: "char(3) DEFAULT NULL", checked: false },
+    'population': { name: 'population', mysql: "varchar(20) DEFAULT NULL", firebird: "varchar(20) DEFAULT NULL", checked: false },
+    'fipsCode': { name: 'fipsCode', mysql: "char(2) DEFAULT NULL", firebird: "char(2) DEFAULT NULL", checked: false },
+    'isoNumeric': { name: 'isoNumeric', mysql: "char(4) DEFAULT NULL", firebird: "char(4) DEFAULT NULL", checked: false },
+    'north': { name: 'north', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
+    'south': { name: 'south', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
+    'east': { name: 'east', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
+    'west': { name: 'west', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
+    'capital': { name: 'capital', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
+    'continentName': { name: 'continentName', mysql: "varchar(15) DEFAULT NULL", firebird: "varchar(15) DEFAULT NULL", checked: false },
+    'continent': { name: 'continent', mysql: "char(2) DEFAULT NULL", firebird: "char(2) DEFAULT NULL", checked: false },
+    'areaInSqKm': { name: 'areaInSqKm', mysql: "varchar(20) DEFAULT NULL", firebird: "varchar(20) DEFAULT NULL", checked: false },
+    'languages': { name: 'languages', mysql: "varchar(100) DEFAULT NULL", firebird: "varchar(100) DEFAULT NULL", checked: false },
+    'isoAlpha3': { name: 'isoAlpha3', mysql: "char(3) DEFAULT NULL", firebird: "char(3) DEFAULT NULL", checked: false },
+    'geonameId': { name: 'geonameId', mysql: "int(10) DEFAULT NULL", firebird: "integer DEFAULT NULL", checked: false }
+};
 
 // TODO: add additional stuff (YAML, CSV etc) to columns array
 
@@ -36,22 +36,19 @@ var columns = [
 //    'languages': "varchar(10) NOT NULL",
 //};
 
-var settings = [
-    { name: 'dblookup', longName: 'Language Lookup tables', checked: false, disabled: false, supportedOutputs: [OUTPUT_MYSQL, OUTPUT_FIREBIRD] }
-];
+var settings = {
+    'dblookup': { name: 'dblookup', longName: 'Language Lookup tables', checked: false, disabled: false, supportedOutputs: [OUTPUT_MYSQL, OUTPUT_FIREBIRD] }
+};
 
-var outputTypes = [
-    { name: OUTPUT_MYSQL, checked: true },
-    { name: OUTPUT_FIREBIRD, checked: false },
-    { name: OUTPUT_XML, checked: false },
-    { name: OUTPUT_JSON, checked: false },
-    { name: OUTPUT_CSV, checked: false },
-    { name: OUTPUT_YAML, checked: false }
-];
+var outputTypes = {};
+outputTypes[OUTPUT_MYSQL] = { name: OUTPUT_MYSQL, checked: true };
+outputTypes[OUTPUT_FIREBIRD] = { name: OUTPUT_FIREBIRD, checked: false };
+outputTypes[OUTPUT_XML] = { name: OUTPUT_XML, checked: false };
+outputTypes[OUTPUT_JSON] = { name: OUTPUT_JSON, checked: false };
+outputTypes[OUTPUT_CSV] = { name: OUTPUT_CSV, checked: false };
+outputTypes[OUTPUT_YAML] = { name: OUTPUT_YAML, checked: false };
 
 // TODO: additional attribute 'languages': "varchar(100) DEFAULT NULL",
-
-// TODO: show example code
 
 // TODO: after click, generate code based on selected options
 
@@ -69,34 +66,36 @@ var GeneratorApp = React.createClass({
         this.getOutput();
     },
     // handles changes for all the checkboxes and radio buttons
-    toggleCheck: function(index, type, data) {
+    toggleCheck: function(objectKey, type, data) {
         // radio buttons are handled different than checkboxes
         if (type === 'outputTypes') {
             var settings = this.state.settings;
 
-            data[index].checked = true;
-            for (var i=0; i<data.length; i++) {
-                if (i !== index) {
-                    data[i].checked = false;
+            data[objectKey].checked = true;
+            for (var key in data) {
+                if (key !== objectKey) {
+                    data[key].checked = false;
                 }
             }
 
-            for (var i=0; i<settings.length; i++) {
-                if (settings[i].name === 'dblookup') {
-                    if (settings[i].supportedOutputs.indexOf(data[index].name) === -1) {
-                        settings[i].checked = false;
-                        settings[i].disabled = true;
+            for (var key in settings) {
+                if (settings.hasOwnProperty(key) && settings[key].name === 'dblookup') {
+                    if (settings[key].supportedOutputs.indexOf(data[objectKey].name) === -1) {
+                        settings[key].checked = false;
+                        settings[key].disabled = true;
 
                         this.setState({settings: settings});
                     } else {
-                        settings[i].disabled = false;
+                        settings[key].disabled = false;
                     }
                 }
             }
 
-            this.setState({outputType: data[index].name});
+            this.setState({outputType: data[objectKey].name});
+        } else if (type === 'settings') {
+            data[objectKey].checked = !data[objectKey].checked;
         } else {
-            data[index].checked = !data[index].checked;
+            data[objectKey].checked = !data[objectKey].checked;
         }
 
         this.setState({type: data});
@@ -121,22 +120,24 @@ var GeneratorApp = React.createClass({
     },
     render: function() {
         var self = this;
-        var columns = this.state.columns.map(function(column, index) {
+        var columns = Object.keys(this.state.columns).map(function(key, index) {
+            var column = self.state.columns[key];
             return (
                 <Column
                     key={index + column.name}
-                    index={index}
+                    objectKey={key}
                     data={self.state.columns}
                     name={column.name}
                     checked={column.checked}
                     onChange={self.toggleCheck} />
             )
         });
-        var settings = this.state.settings.map(function(setting, index) {
+        var settings = Object.keys(this.state.settings).map(function(key, index) {
+            var setting = self.state.settings[key];
             return (
                 <Setting
-                    key={index + setting.name}
-                    index={index}
+                    key={index + key}
+                    objectKey={key}
                     data={self.state.settings}
                     name={setting.name}
                     longName={setting.longName}
@@ -145,11 +146,12 @@ var GeneratorApp = React.createClass({
                     disabled={setting.disabled} />
             )
         });
-        var outputTypes = this.state.outputTypes.map(function(outputType, index) {
+        var outputTypes = Object.keys(this.state.outputTypes).map(function(key, index) {
+            var outputType = self.state.outputTypes[key];
             return (
                 <OutputType
                     key={index + outputType.name}
-                    index={index}
+                    objectKey={key}
                     data={self.state.outputTypes}
                     name={outputType.name}
                     checked={outputType.checked}
@@ -196,11 +198,11 @@ var GeneratorApp = React.createClass({
 
 var Column = React.createClass({
     handleChange: function(event) {
-        var index = this.props.index,
+        var objectKey = this.props.objectKey,
             type = event.target.dataset.type,
             data = this.props.data;
 
-        this.props.onChange(index, type, data);
+        this.props.onChange(objectKey, type, data);
     },
     render: function() {
         return (
@@ -222,11 +224,11 @@ var Column = React.createClass({
 
 var Setting = React.createClass({
     handleChange: function(event) {
-        var index = this.props.index,
+        var objectKey = this.props.objectKey,
             type = event.target.dataset.type,
             data = this.props.data;
 
-        this.props.onChange(index, type, data);
+        this.props.onChange(objectKey, type, data);
     },
     render: function() {
         return (
@@ -249,11 +251,11 @@ var Setting = React.createClass({
 
 var OutputType = React.createClass({
     handleChange: function(event) {
-        var index = this.props.index,
+        var objectKey = this.props.objectKey,
             type = event.target.dataset.type,
             data = this.props.data;
 
-        this.props.onChange(index, type, data);
+        this.props.onChange(objectKey, type, data);
     },
     render: function() {
         return (
@@ -276,24 +278,19 @@ var OutputType = React.createClass({
 var generateOutput = function(outputType, columns, options, data) {
     var output = "";
     var selectedColumns = [];
+    var columnsDefinition = "";
+    var countries = "";
 
-    // TODO: define countries here
-
-    for (var i=0; i<columns.length; i++) {
-        if (columns[i].checked) {
-            selectedColumns.push(columns[i]);
+    for (var key in columns) {
+        if (columns.hasOwnProperty(key) && columns[key].checked) {
+            selectedColumns.push(columns[key]);
         }
     }
 
     // TODO: check options dblookup
-    // TODO: check options dblookup
-    // TODO: check options dblookup
 
     switch (outputType) {
         case OUTPUT_MYSQL:
-            var columnsDefinition = "";
-            var countries = "";
-
             // TODO: lookup
 
             output =
@@ -340,9 +337,7 @@ var generateOutput = function(outputType, columns, options, data) {
         case OUTPUT_FIREBIRD:
             // TODO: lookup
 
-            var columnsDefinition = "";
             var insertStatement = "";
-            var countries = "";
 
             output =
                 "CREATE TABLE countries (\n" +
@@ -386,8 +381,6 @@ var generateOutput = function(outputType, columns, options, data) {
 
             break;
         case OUTPUT_XML:
-            var countries = "";
-
             output =
                 "<countries>\n" +
                 "{0}" +
@@ -408,8 +401,6 @@ var generateOutput = function(outputType, columns, options, data) {
 
             break;
         case OUTPUT_JSON:
-            var countries = "";
-
             output =
                 "{\n" +
                 "    \"countries\": {\n" +
@@ -458,8 +449,6 @@ var generateOutput = function(outputType, columns, options, data) {
 
             break;
         case OUTPUT_YAML:
-            var countries = "";
-
             output =
                 "---\n" +
                 "countries:\n" +
