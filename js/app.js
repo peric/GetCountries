@@ -37,7 +37,7 @@ var columns = [
 //};
 
 var settings = [
-    { name: 'dblookup', longName: 'Language Lookup tables', checked: false }
+    { name: 'dblookup', longName: 'Language Lookup tables', checked: false, disabled: false, supportedOutputs: [OUTPUT_MYSQL, OUTPUT_FIREBIRD] }
 ];
 
 var outputTypes = [
@@ -68,15 +68,32 @@ var GeneratorApp = React.createClass({
     componentDidMount: function() {
         this.getOutput();
     },
+    // handles changes for all the checkboxes and radio buttons
     toggleCheck: function(index, type, data) {
         // radio buttons are handled different than checkboxes
         if (type === 'outputTypes') {
+            var settings = this.state.settings;
+
             data[index].checked = true;
             for (var i=0; i<data.length; i++) {
                 if (i !== index) {
                     data[i].checked = false;
                 }
             }
+
+            for (var i=0; i<settings.length; i++) {
+                if (settings[i].name === 'dblookup') {
+                    if (settings[i].supportedOutputs.indexOf(data[index].name) === -1) {
+                        settings[i].checked = false;
+                        settings[i].disabled = true;
+
+                        this.setState({settings: settings});
+                    } else {
+                        settings[i].disabled = false;
+                    }
+                }
+            }
+
             this.setState({outputType: data[index].name});
         } else {
             data[index].checked = !data[index].checked;
@@ -124,7 +141,8 @@ var GeneratorApp = React.createClass({
                     name={setting.name}
                     longName={setting.longName}
                     checked={setting.checked}
-                    onChange={self.toggleCheck} />
+                    onChange={self.toggleCheck}
+                    disabled={setting.disabled} />
             )
         });
         var outputTypes = this.state.outputTypes.map(function(outputType, index) {
@@ -216,11 +234,12 @@ var Setting = React.createClass({
                 <label>
                     <input
                         type="checkbox"
-                        className="column"
-                        name="column"
-                        data-type="columns"
+                        className="setting"
+                        name="setting"
+                        data-type="settings"
                         checked={this.props.checked}
-                        onChange={this.handleChange} />
+                        onChange={this.handleChange}
+                        disabled={this.props.disabled} />
                             {this.props.longName}
                 </label>
             </div>
@@ -272,9 +291,10 @@ var generateOutput = function(outputType, columns, options, data) {
 
     switch (outputType) {
         case OUTPUT_MYSQL:
-            // TODO: check options dblookup
             var columnsDefinition = "";
             var countries = "";
+
+            // TODO: lookup
 
             output =
                 "CREATE TABLE IF NOT EXISTS `countries` (\n" +
