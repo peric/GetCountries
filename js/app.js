@@ -37,16 +37,16 @@ var columns = {
 //};
 
 var settings = {
-    'dblookup': { name: 'dblookup', longName: 'Language Lookup tables', checked: false, disabled: false, supportedOutputs: [OUTPUT_MYSQL, OUTPUT_FIREBIRD] }
+    'languagelookup': { name: 'languagelookup', longName: 'Language Lookup tables', checked: false, disabled: false, supportedOutputs: [OUTPUT_MYSQL, OUTPUT_FIREBIRD] }
 };
 
 var outputTypes = {};
-outputTypes[OUTPUT_MYSQL] = { name: OUTPUT_MYSQL, checked: true };
-outputTypes[OUTPUT_FIREBIRD] = { name: OUTPUT_FIREBIRD, checked: false };
-outputTypes[OUTPUT_XML] = { name: OUTPUT_XML, checked: false };
-outputTypes[OUTPUT_JSON] = { name: OUTPUT_JSON, checked: false };
-outputTypes[OUTPUT_CSV] = { name: OUTPUT_CSV, checked: false };
-outputTypes[OUTPUT_YAML] = { name: OUTPUT_YAML, checked: false };
+outputTypes[OUTPUT_MYSQL] = { name: OUTPUT_MYSQL };
+outputTypes[OUTPUT_FIREBIRD] = { name: OUTPUT_FIREBIRD };
+outputTypes[OUTPUT_XML] = { name: OUTPUT_XML };
+outputTypes[OUTPUT_JSON] = { name: OUTPUT_JSON };
+outputTypes[OUTPUT_CSV] = { name: OUTPUT_CSV };
+outputTypes[OUTPUT_YAML] = { name: OUTPUT_YAML };
 
 // TODO: additional attribute 'languages': "varchar(100) DEFAULT NULL",
 
@@ -58,7 +58,7 @@ var GeneratorApp = React.createClass({
             columns: this.props.columns,
             settings: this.props.settings,
             outputTypes: this.props.outputTypes,
-            outputType: OUTPUT_MYSQL,
+            selectedOutputType: OUTPUT_MYSQL,
             output: ''
         };
     },
@@ -71,34 +71,35 @@ var GeneratorApp = React.createClass({
         if (type === 'outputTypes') {
             var settings = this.state.settings;
 
-            data[objectKey].checked = true;
-            for (var key in data) {
-                if (key !== objectKey) {
-                    data[key].checked = false;
-                }
-            }
-
+            // based on the selected, disable or enable 'languagelookup' setting
             for (var key in settings) {
-                if (settings.hasOwnProperty(key) && settings[key].name === 'dblookup') {
+                if (settings.hasOwnProperty(key) && settings[key].name === 'languagelookup') {
                     if (settings[key].supportedOutputs.indexOf(data[objectKey].name) === -1) {
                         settings[key].checked = false;
                         settings[key].disabled = true;
-
-                        this.setState({settings: settings});
                     } else {
                         settings[key].disabled = false;
                     }
                 }
             }
 
-            this.setState({outputType: data[objectKey].name});
+            this.setState({selectedOutputType: data[objectKey].name});
         } else if (type === 'settings') {
+            if (data[objectKey].name === 'languagelookup' && !data[objectKey].checked) {
+                var columns = this.state.columns;
+
+                columns['languages'].checked = true;
+            }
+
             data[objectKey].checked = !data[objectKey].checked;
         } else {
             data[objectKey].checked = !data[objectKey].checked;
         }
 
-        this.setState({type: data});
+        this.forceUpdate();
+
+        // TODO: do I need this? How forceUpdate does updates based on references?
+//        this.setState({type: data});
     },
     getOutput: function(e) {
         if (e) {
@@ -109,13 +110,13 @@ var GeneratorApp = React.createClass({
         var source = 'http://api.geonames.org/countryInfoJSON?username=dperic';
         var columns = this.state.columns;
         var options = this.state.options;
-        var outputType = this.state.outputType;
+        var selectedOutputType = this.state.selectedOutputType;
 
         $.getJSON(source)
             .done(function(data) {
                 var geonamesData = data.geonames;
 
-                this.setState({'output': generateOutput(outputType, columns, options, geonamesData) });
+                this.setState({'output': generateOutput(selectedOutputType, columns, options, geonamesData) });
         }.bind(this));
     },
     render: function() {
@@ -154,7 +155,7 @@ var GeneratorApp = React.createClass({
                     objectKey={key}
                     data={self.state.outputTypes}
                     name={outputType.name}
-                    checked={outputType.checked}
+                    checked={self.state.selectedOutputType == outputType.name}
                     onChange={self.toggleCheck} />
             )
         });
@@ -275,7 +276,7 @@ var OutputType = React.createClass({
     }
 });
 
-var generateOutput = function(outputType, columns, options, data) {
+var generateOutput = function(selectedOutputType, columns, options, data) {
     var output = "";
     var selectedColumns = [];
     var columnsDefinition = "";
@@ -287,9 +288,11 @@ var generateOutput = function(outputType, columns, options, data) {
         }
     }
 
-    // TODO: check options dblookup
 
-    switch (outputType) {
+
+    // TODO: check options languagelookup
+
+    switch (selectedOutputType) {
         case OUTPUT_MYSQL:
             // TODO: lookup
 
@@ -346,7 +349,6 @@ var generateOutput = function(outputType, columns, options, data) {
                 ");\n\n" +
                 "{1}";
 
-            // TODO: write this better - do not repeat?
             // insert statement
             insertStatement = "INSERT INTO countries (";
             for (var i=0; i<selectedColumns.length; i++) {
@@ -480,5 +482,3 @@ React.render(
     <GeneratorApp columns={columns} settings={settings} outputTypes={outputTypes} />,
     document.getElementById('content')
 );
-
-// TODO: restructure https://facebook.github.io/flux/docs/todo-list.html
