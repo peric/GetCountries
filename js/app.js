@@ -6,35 +6,29 @@ var OUTPUT_MYSQL = 'MySQL',
     OUTPUT_YAML = 'YAML';
 
 var columns = {
-    'countryCode': { name: 'countryCode', mysql: "char(2) NOT NULL DEFAULT ''", firebird: "char(3) NOT NULL", checked: true },
-    'countryName': { name: 'countryName', mysql: "varchar(45) NOT NULL DEFAULT ''", firebird: "varchar(45) NOT NULL", checked: true },
-    'currencyCode': { name: 'currencyCode', mysql: "char(3) DEFAULT NULL", firebird: "char(3) DEFAULT NULL", checked: false },
-    'population': { name: 'population', mysql: "varchar(20) DEFAULT NULL", firebird: "varchar(20) DEFAULT NULL", checked: false },
-    'fipsCode': { name: 'fipsCode', mysql: "char(2) DEFAULT NULL", firebird: "char(2) DEFAULT NULL", checked: false },
-    'isoNumeric': { name: 'isoNumeric', mysql: "char(4) DEFAULT NULL", firebird: "char(4) DEFAULT NULL", checked: false },
-    'north': { name: 'north', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    'south': { name: 'south', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    'east': { name: 'east', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    'west': { name: 'west', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    'capital': { name: 'capital', mysql: "varchar(30) DEFAULT NULL", firebird: "varchar(30) DEFAULT NULL", checked: false },
-    'continentName': { name: 'continentName', mysql: "varchar(15) DEFAULT NULL", firebird: "varchar(15) DEFAULT NULL", checked: false },
-    'continent': { name: 'continent', mysql: "char(2) DEFAULT NULL", firebird: "char(2) DEFAULT NULL", checked: false },
-    'areaInSqKm': { name: 'areaInSqKm', mysql: "varchar(20) DEFAULT NULL", firebird: "varchar(20) DEFAULT NULL", checked: false },
-    'languages': { name: 'languages', mysql: "varchar(100) DEFAULT NULL", firebird: "varchar(100) DEFAULT NULL", checked: false },
-    'isoAlpha3': { name: 'isoAlpha3', mysql: "char(3) DEFAULT NULL", firebird: "char(3) DEFAULT NULL", checked: false },
-    'geonameId': { name: 'geonameId', mysql: "int(10) DEFAULT NULL", firebird: "integer DEFAULT NULL", checked: false }
+    'countryCode': { name: 'countryCode', mysql: 'char(2) NOT NULL DEFAULT \'\'', firebird: 'char(3) NOT NULL', checked: true },
+    'countryName': { name: 'countryName', mysql: 'varchar(45) NOT NULL DEFAULT \'\'', firebird: 'varchar(45) NOT NULL', checked: true },
+    'currencyCode': { name: 'currencyCode', mysql: 'char(3) DEFAULT NULL', firebird: 'char(3) DEFAULT NULL', checked: false },
+    'population': { name: 'population', mysql: 'varchar(20) DEFAULT NULL', firebird: 'varchar(20) DEFAULT NULL', checked: false },
+    'fipsCode': { name: 'fipsCode', mysql: 'char(2) DEFAULT NULL', firebird: 'char(2) DEFAULT NULL', checked: false },
+    'isoNumeric': { name: 'isoNumeric', mysql: 'char(4) DEFAULT NULL', firebird: 'char(4) DEFAULT NULL', checked: false },
+    'north': { name: 'north', mysql: 'varchar(30) DEFAULT NULL', firebird: 'varchar(30) DEFAULT NULL', checked: false },
+    'south': { name: 'south', mysql: 'varchar(30) DEFAULT NULL', firebird: 'varchar(30) DEFAULT NULL', checked: false },
+    'east': { name: 'east', mysql: 'varchar(30) DEFAULT NULL', firebird: 'varchar(30) DEFAULT NULL', checked: false },
+    'west': { name: 'west', mysql: 'varchar(30) DEFAULT NULL', firebird: 'varchar(30) DEFAULT NULL', checked: false },
+    'capital': { name: 'capital', mysql: 'varchar(30) DEFAULT NULL', firebird: 'varchar(30) DEFAULT NULL', checked: false },
+    'continentName': { name: 'continentName', mysql: 'varchar(15) DEFAULT NULL', firebird: 'varchar(15) DEFAULT NULL', checked: false },
+    'continent': { name: 'continent', mysql: 'char(2) DEFAULT NULL', firebird: 'char(2) DEFAULT NULL', checked: false },
+    'areaInSqKm': { name: 'areaInSqKm', mysql: 'varchar(20) DEFAULT NULL', firebird: 'varchar(20) DEFAULT NULL', checked: false },
+    'languages': { name: 'languages', mysql: 'varchar(100) DEFAULT NULL', firebird: 'varchar(100) DEFAULT NULL', checked: false },
+    'isoAlpha3': { name: 'isoAlpha3', mysql: 'char(3) DEFAULT NULL', firebird: 'char(3) DEFAULT NULL', checked: false },
+    'geonameId': { name: 'geonameId', mysql: 'int(10) DEFAULT NULL', firebird: 'integer DEFAULT NULL', checked: false }
 };
 
-// TODO: add additional stuff (YAML, CSV etc) to columns array
-
-// TODO: when lookup tables is selected, select also languages
-
-// TODO: disable lookup tables if it's not for mysql of firebird
-
-//var columnsAttrLookupLang = {
-//    'countryCode': "char(3) NOT NULL",
-//    'languages': "varchar(10) NOT NULL",
-//};
+var columnsLookup = [
+    { name: 'countryCode', mysql: 'char(2) NOT NULL DEFAULT \'\'', firebird: 'char(3) NOT NULL', checked: true },
+    { name: 'languages', mysql: 'varchar(100) DEFAULT NULL', firebird: 'varchar(100) DEFAULT NULL', checked: false }
+];
 
 var settings = {
     'languagelookup': { name: 'languagelookup', longName: 'Language Lookup tables', checked: false, disabled: false, supportedOutputs: [OUTPUT_MYSQL, OUTPUT_FIREBIRD] }
@@ -47,10 +41,6 @@ outputTypes[OUTPUT_XML] = { name: OUTPUT_XML };
 outputTypes[OUTPUT_JSON] = { name: OUTPUT_JSON };
 outputTypes[OUTPUT_CSV] = { name: OUTPUT_CSV };
 outputTypes[OUTPUT_YAML] = { name: OUTPUT_YAML };
-
-// TODO: additional attribute 'languages': "varchar(100) DEFAULT NULL",
-
-// TODO: after click, generate code based on selected options
 
 var GeneratorApp = React.createClass({
     getInitialState: function() {
@@ -105,18 +95,19 @@ var GeneratorApp = React.createClass({
         if (e) {
             e.preventDefault();
         }
+
         // TODO: show loader on button
 
         var source = 'http://api.geonames.org/countryInfoJSON?username=dperic';
         var columns = this.state.columns;
-        var options = this.state.options;
+        var settings = this.state.settings;
         var selectedOutputType = this.state.selectedOutputType;
 
         $.getJSON(source)
             .done(function(data) {
                 var geonamesData = data.geonames;
 
-                this.setState({'output': generateOutput(selectedOutputType, columns, options, geonamesData) });
+                this.setState({'output': generateOutput(selectedOutputType, columns, settings, geonamesData) });
         }.bind(this));
     },
     render: function() {
@@ -276,7 +267,7 @@ var OutputType = React.createClass({
     }
 });
 
-var generateOutput = function(selectedOutputType, columns, options, data) {
+var generateOutput = function(selectedOutputType, columns, settings, data) {
     var output = "";
     var selectedColumns = [];
     var columnsDefinition = "";
@@ -288,53 +279,124 @@ var generateOutput = function(selectedOutputType, columns, options, data) {
         }
     }
 
-
-
-    // TODO: check options languagelookup
-
     switch (selectedOutputType) {
         case OUTPUT_MYSQL:
-            // TODO: lookup
+            if (settings.languagelookup.checked) {
+                var lookupCountries = "";
+                var lookupColumnsDefinition = "";
 
-            output =
+                output =
                 "CREATE TABLE IF NOT EXISTS `countries` (\n" +
+                "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
+                "{0}" +
+                "    PRIMARY KEY (`id`)\n" +
+                ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
+                "" +
+                "CREATE TABLE IF NOT EXISTS `country_lang_lnk` (\n" +
+                "{1}" +
+                "    PRIMARY KEY (`countryCode`,`languages`)\n" +
+                ") ENGINE=MyISAM DEFAULT CHARSET=utf8;\n\n" +
+                "{2}\n" +
+                "{3}";
+
+                // insert statements
+                countries = "INSERT INTO `countries` (";
+                for (var i=0; i<selectedColumns.length; i++) {
+                    var columnName = selectedColumns[i].name;
+                    var mysqlCode = selectedColumns[i].mysql;
+
+                    if (columnName !== 'languages') {
+                        columnsDefinition += "    `" + columnName + "` " + mysqlCode + ",\n";
+                        countries += "`" + columnName + "`, ";
+                    }
+                }
+                countries = countries.substring(0, countries.length - 2);
+                countries += ") VALUES";
+
+                lookupCountries = "INSERT INTO `country_lang_lnk` (";
+                for (var i=0; i<columnsLookup.length; i++) {
+                    var columnName = columnsLookup[i].name;
+                    var mysqlCode = columnsLookup[i].mysql;
+
+                    lookupColumnsDefinition += "    `" + columnName + "` " + mysqlCode + ",\n";
+                    lookupCountries += "`" + columnName + "`, ";
+                }
+                lookupCountries = lookupCountries.substring(0, lookupCountries.length - 2);
+                lookupCountries += ") VALUES";
+
+                // insert values
+                for (var i=0; i<data.length; i++) {
+                    countries += "\n(";
+                    for (var j=0; j<selectedColumns.length; j++) {
+                        var columnName = selectedColumns[j].name;
+                        var value = data[i][columnName];
+
+                        if (typeof value === "string")
+                            countries += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
+                        else
+                            countries += value + ", ";
+                    }
+                    countries = countries.substring(0, countries.length - 2);
+                    countries += "),";
+                }
+                countries = countries.substring(0, countries.length - 1);
+
+                for (var i=0; i<data.length; i++) {
+                    lookupCountries += "\n(";
+                    for (var j=0; j<columnsLookup.length; j++) {
+                        var columnName = columnsLookup[j].name;
+                        var value = data[i][columnName];
+
+                        if (typeof value === "string")
+                            lookupCountries += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
+                        else
+                            lookupCountries += value + ", ";
+                    }
+                    lookupCountries = lookupCountries.substring(0, lookupCountries.length - 2);
+                    lookupCountries += "),";
+                }
+                lookupCountries = lookupCountries.substring(0, lookupCountries.length - 1);
+
+                output = output.format(columnsDefinition, lookupColumnsDefinition, countries, lookupCountries);
+            } else {
+                output =
+                    "CREATE TABLE IF NOT EXISTS `countries` (\n" +
                     "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
                     "{0}" +
                     "    PRIMARY KEY (`id`)\n" +
                     ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
                     "{1}";
 
-            // TODO: write this better - do not repeat?
-            // insert statement
-            countries = "INSERT INTO `countries` (";
-            for (var i=0; i<selectedColumns.length; i++) {
-                var columnName = selectedColumns[i].name;
-                var mysqlCode = selectedColumns[i].mysql;
+                countries = "INSERT INTO `countries` (";
+                for (var i=0; i<selectedColumns.length; i++) {
+                    var columnName = selectedColumns[i].name;
+                    var mysqlCode = selectedColumns[i].mysql;
 
-                columnsDefinition += "    `" + columnName + "` " + mysqlCode + ",\n";
-                countries += "`" + columnName + "`, ";
-            }
-            countries = countries.substring(0, countries.length - 2);
-            countries += ") VALUES";
-
-            // insert values
-            for (var i=0; i<data.length; i++) {
-                countries += "\n(";
-                for (var j=0; j<selectedColumns.length; j++) {
-                    var columnName = selectedColumns[j].name;
-                    var value = data[i][columnName];
-
-                    if (typeof value === "string")
-                        countries += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
-                    else
-                        countries += value + ", ";
+                    columnsDefinition += "    `" + columnName + "` " + mysqlCode + ",\n";
+                    countries += "`" + columnName + "`, ";
                 }
                 countries = countries.substring(0, countries.length - 2);
-                countries += "),";
-            }
-            countries = countries.substring(0, countries.length - 1);
+                countries += ") VALUES";
 
-            output = output.format(columnsDefinition, countries);
+                // insert values
+                for (var i=0; i<data.length; i++) {
+                    countries += "\n(";
+                    for (var j=0; j<selectedColumns.length; j++) {
+                        var columnName = selectedColumns[j].name;
+                        var value = data[i][columnName];
+
+                        if (typeof value === "string")
+                            countries += "'" + value.replace(/\x27/g, '\\\x27') + "', ";
+                        else
+                            countries += value + ", ";
+                    }
+                    countries = countries.substring(0, countries.length - 2);
+                    countries += "),";
+                }
+                countries = countries.substring(0, countries.length - 1);
+
+                output = output.format(columnsDefinition, countries);
+            }
 
             break;
         case OUTPUT_FIREBIRD:
