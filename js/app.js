@@ -286,18 +286,18 @@ var generateOutput = function(selectedOutputType, columns, settings, data) {
                 var lookupColumnsDefinition = "";
 
                 output =
-                "CREATE TABLE IF NOT EXISTS `countries` (\n" +
-                "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
-                "{0}" +
-                "    PRIMARY KEY (`id`)\n" +
-                ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
-                "" +
-                "CREATE TABLE IF NOT EXISTS `country_lang_lnk` (\n" +
-                "{1}" +
-                "    PRIMARY KEY (`countryCode`,`languages`)\n" +
-                ") ENGINE=MyISAM DEFAULT CHARSET=utf8;\n\n" +
-                "{2}\n" +
-                "{3}";
+                    "CREATE TABLE IF NOT EXISTS `countries` (\n" +
+                    "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
+                    "{0}" +
+                    "    PRIMARY KEY (`id`)\n" +
+                    ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
+                    "" +
+                    "CREATE TABLE IF NOT EXISTS `country_lang_lnk` (\n" +
+                    "{1}" +
+                    "    PRIMARY KEY (`countryCode`,`languages`)\n" +
+                    ") ENGINE=MyISAM DEFAULT CHARSET=utf8;\n\n" +
+                    "{2}\n" +
+                    "{3}";
 
                 // insert statements
                 countries = "INSERT INTO `countries` (";
@@ -401,6 +401,8 @@ var generateOutput = function(selectedOutputType, columns, settings, data) {
             break;
         case OUTPUT_FIREBIRD:
             // TODO: lookup
+
+
 
             var insertStatement = "";
 
