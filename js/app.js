@@ -52,7 +52,7 @@ var GeneratorApp = React.createClass({
             output: ''
         };
     },
-    componentDidMount: function() {
+    componentWillMount: function() {
         this.getOutput();
     },
     // handles changes for all the checkboxes and radio buttons
