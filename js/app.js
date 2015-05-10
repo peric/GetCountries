@@ -1,3 +1,7 @@
+require('./prototype.js');
+var $ = require('jquery');
+var React = require('react');
+
 var OUTPUT_MYSQL = 'MySQL',
     OUTPUT_FIREBIRD = 'Firebird',
     OUTPUT_XML = 'XML',
@@ -546,3 +550,5 @@ React.render(
     <GeneratorApp columns={columns} settings={settings} outputTypes={outputTypes} />,
     document.getElementById('content')
 );
+
+require('./main.js');

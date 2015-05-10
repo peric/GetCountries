@@ -1,0 +1,28 @@
+{
+  "name": "GetCountries",
+  "version": "0.0.1",
+  "description": "",
+  "main": "js/app.js",
+  "scripts": {
+    "start": "http-server & npm run watch",
+    "watch": "watchify -t reactify js/app.js -o dist/app.js",
+    "build": "browserify -t reactify js/app.js -o dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peric/GetCountries"
+  },
+  "engine": {
+    "node": ">=0.12.0"
+  },
+  "author": "Drazen Peric",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "9.0.3",
+    "http-server": "0.8.0",
+    "jquery": "^2.1.4",
+    "react": "^0.13.2",
+    "reactify": "^1.1.0",
+    "watchify": "^3.2.1"
+  }
+}
