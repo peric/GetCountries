@@ -1,6 +1,8 @@
-require('./prototype.js');
+require('./prototype.js'); // TODO: remove that and use https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/template_strings
 var $ = require('jquery');
 var React = require('react');
+
+// TODO: seperate into more files/components
 
 var OUTPUT_MYSQL = 'MySQL',
     OUTPUT_FIREBIRD = 'Firebird',
@@ -61,6 +63,8 @@ var GeneratorApp = React.createClass({
     },
     // handles changes for all the checkboxes and radio buttons
     toggleCheck: function(objectKey, type, data) {
+        var newState = {};
+
         // radio buttons are handled different than checkboxes
         if (type === 'outputTypes') {
             var settings = this.state.settings;
@@ -78,11 +82,14 @@ var GeneratorApp = React.createClass({
             }
 
             this.setState({selectedOutputType: data[objectKey].name});
+            this.setState({settings: settings});
         } else if (type === 'settings') {
             if (data[objectKey].name === 'languagelookup' && !data[objectKey].checked) {
                 var columns = this.state.columns;
 
                 columns['languages'].checked = true;
+
+                this.setState({columns: columns});
             }
 
             data[objectKey].checked = !data[objectKey].checked;
@@ -90,10 +97,9 @@ var GeneratorApp = React.createClass({
             data[objectKey].checked = !data[objectKey].checked;
         }
 
-        this.forceUpdate();
+        newState[type] = data;
 
-        // TODO: do I need this? How forceUpdate does updates based on references?
-//        this.setState({type: data});
+        this.setState(newState);
     },
     getOutput: function(e) {
         if (e) {
@@ -122,7 +128,7 @@ var GeneratorApp = React.createClass({
                 <Column
                     key={index + column.name}
                     objectKey={key}
-                    data={self.state.columns}
+                    columns={self.state.columns}
                     name={column.name}
                     checked={column.checked}
                     onChange={self.toggleCheck} />
@@ -134,7 +140,7 @@ var GeneratorApp = React.createClass({
                 <Setting
                     key={index + key}
                     objectKey={key}
-                    data={self.state.settings}
+                    settings={self.state.settings}
                     name={setting.name}
                     longName={setting.longName}
                     checked={setting.checked}
@@ -148,7 +154,7 @@ var GeneratorApp = React.createClass({
                 <OutputType
                     key={index + outputType.name}
                     objectKey={key}
-                    data={self.state.outputTypes}
+                    outputTypes={self.state.outputTypes}
                     name={outputType.name}
                     checked={self.state.selectedOutputType == outputType.name}
                     onChange={self.toggleCheck} />
@@ -196,9 +202,9 @@ var Column = React.createClass({
     handleChange: function(event) {
         var objectKey = this.props.objectKey,
             type = event.target.dataset.type,
-            data = this.props.data;
+            columns = this.props.columns;
 
-        this.props.onChange(objectKey, type, data);
+        this.props.onChange(objectKey, type, columns);
     },
     render: function() {
         return (
@@ -222,9 +228,9 @@ var Setting = React.createClass({
     handleChange: function(event) {
         var objectKey = this.props.objectKey,
             type = event.target.dataset.type,
-            data = this.props.data;
+            settings = this.props.settings;
 
-        this.props.onChange(objectKey, type, data);
+        this.props.onChange(objectKey, type, settings);
     },
     render: function() {
         return (
@@ -249,9 +255,9 @@ var OutputType = React.createClass({
     handleChange: function(event) {
         var objectKey = this.props.objectKey,
             type = event.target.dataset.type,
-            data = this.props.data;
+            outputTypes = this.props.outputTypes;
 
-        this.props.onChange(objectKey, type, data);
+        this.props.onChange(objectKey, type, outputTypes);
     },
     render: function() {
         return (
