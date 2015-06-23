@@ -24,7 +24,7 @@ $ npm start
 ## Run and Watch
 
 ```
-$ npm watch
+$ npm run watch
 ```
 
 ## Build
@@ -32,3 +32,9 @@ $ npm watch
 ```
 $ npm build
 ```
+
+## TODO
+
+* different gitignore files in master and gh-pages
+* finish other thing - for firebird db
+* output.format

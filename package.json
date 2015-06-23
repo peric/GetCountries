@@ -5,8 +5,8 @@
   "main": "js/app.js",
   "scripts": {
     "start": "http-server & npm run watch",
-    "watch": "watchify -t reactify js/app.js -o dist/app.js",
-    "build": "browserify -t reactify js/app.js -o dist/app.js"
+    "watch": "watchify -t babelify js/app.js -o dist/app.js",
+    "build": "browserify -t babelify js/app.js -o dist/app.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
     "jquery": "^2.1.4",
     "react": "^0.13.2",
     "reactify": "^1.1.0",
-    "watchify": "^3.2.1"
+    "watchify": "^3.2.1",
+    "babelify": "^6.1.2"
   }
 }
