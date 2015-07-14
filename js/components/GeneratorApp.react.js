@@ -4,7 +4,6 @@ var Column = require('./Column.react');
 var OutputType = require('./OutputType.react');
 var Setting = require('./Setting.react');
 var GeneratorActions = require('../actions/GeneratorActions');
-var outputTypes = require('../variables/outputTypes.js');
 
 var GeneratorApp = React.createClass({
     getInitialState: function() {
@@ -12,7 +11,7 @@ var GeneratorApp = React.createClass({
             columns: this.props.columns,
             settings: this.props.settings,
             outputTypes: this.props.outputTypes,
-            selectedOutputType: outputTypes.OUTPUT_MYSQL,
+            selectedOutputType: this.props.outputTypes.OUTPUT_MYSQL,
             output: ''
         };
     },
@@ -20,7 +19,7 @@ var GeneratorApp = React.createClass({
         this.getOutput();
     },
     // handles changes for all the checkboxes and radio buttons
-    toggleCheck: function(objectKey, type, data) {
+    toggleCheck: function(objectKey, type, selectedList) {
         var newState = {};
 
         // radio buttons are handled different than checkboxes
@@ -30,7 +29,7 @@ var GeneratorApp = React.createClass({
             // based on the selected, disable or enable 'languagelookup' setting
             for (var key in settings) {
                 if (settings.hasOwnProperty(key) && settings[key].name === 'languagelookup') {
-                    if (settings[key].supportedOutputs.indexOf(data[objectKey].name) === -1) {
+                    if (settings[key].supportedOutputs.indexOf(selectedList[objectKey].name) === -1) {
                         settings[key].checked = false;
                         settings[key].disabled = true;
                     } else {
@@ -39,23 +38,23 @@ var GeneratorApp = React.createClass({
                 }
             }
 
-            this.setState({selectedOutputType: data[objectKey].name});
+            this.setState({selectedOutputType: selectedList[objectKey]});
             this.setState({settings: settings});
         } else if (type === 'settings') {
-            if (data[objectKey].name === 'languagelookup' && !data[objectKey].checked) {
+            if (selectedList[objectKey].name === 'languagelookup') {
                 var columns = this.state.columns;
 
-                columns['languages'].checked = true;
+                columns['languages'].checked = !selectedList[objectKey].checked;
 
                 this.setState({columns: columns});
             }
 
-            data[objectKey].checked = !data[objectKey].checked;
+            selectedList[objectKey].checked = !selectedList[objectKey].checked;
         } else {
-            data[objectKey].checked = !data[objectKey].checked;
+            selectedList[objectKey].checked = !selectedList[objectKey].checked;
         }
 
-        newState[type] = data;
+        newState[type] = selectedList;
 
         this.setState(newState);
     },
@@ -70,8 +69,8 @@ var GeneratorApp = React.createClass({
         var selectedOutputType = this.state.selectedOutputType;
 
         $.getJSON(source)
-            .done(function(data) {
-                var geonamesData = data.geonames;
+            .done(function(fetchedData) {
+                var geonamesData = fetchedData.geonames;
 
                 this.setState({'output': GeneratorActions.generateOutput(selectedOutputType, columns, settings, geonamesData) });
             }.bind(this));

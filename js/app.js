@@ -18,12 +18,13 @@ React.render(
         this.select();
 
         // TODO: copy to clipboard
+
         // https://github.com/zeroclipboard/zeroclipboard
     };
 
     // TODO: show loader on button
+
 //    $('#generateButton').on('click', function () {
-//        console.log('taa    ')
 //
 //        var $btn = $(this).button('loading')
 //        // business logic...

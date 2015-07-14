@@ -1,11 +1,7 @@
 var outputTypes = require('../variables/outputTypes.js');
+var columnsLookup = require('../variables/columnsLookup.js');
 
 // TODO: move this thing for FB database here
-
-//var columnsLookup = [
-//    { name: 'countryCode', mysql: 'char(2) NOT NULL DEFAULT \'\'', firebird: 'char(3) NOT NULL', checked: true },
-//    { name: 'languages', mysql: 'varchar(100) DEFAULT NULL', firebird: 'varchar(100) DEFAULT NULL', checked: false }
-//];
 
 var GeneratorActions = {
     generateOutput: function (selectedOutputType, columns, settings, data) {
@@ -25,20 +21,6 @@ var GeneratorActions = {
                 if (settings.languagelookup.checked) {
                     var lookupCountries = "";
                     var lookupColumnsDefinition = "";
-
-                    output =
-                        "CREATE TABLE IF NOT EXISTS `countries` (\n" +
-                            "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
-                            "{0}" +
-                            "    PRIMARY KEY (`id`)\n" +
-                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
-                            "" +
-                            "CREATE TABLE IF NOT EXISTS `country_lang_lnk` (\n" +
-                            "{1}" +
-                            "    PRIMARY KEY (`countryCode`,`languages`)\n" +
-                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8;\n\n" +
-                            "{2}\n" +
-                            "{3}";
 
                     // insert statements
                     countries = "INSERT INTO `countries` (";
@@ -98,17 +80,22 @@ var GeneratorActions = {
                     }
                     lookupCountries = lookupCountries.substring(0, lookupCountries.length - 1);
 
-                    // TODO: finish this
-//                    output = output.format(columnsDefinition, lookupColumnsDefinition, countries, lookupCountries);
-                } else {
                     output =
-                        "CREATE TABLE IF NOT EXISTS `countries` (\n" +
-                            "    `id` int(5) NOT NULL AUTO_INCREMENT,\n" +
-                            "{0}" +
-                            "    PRIMARY KEY (`id`)\n" +
-                            ") ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n" +
-                            "{1}";
+                        `CREATE TABLE IF NOT EXISTS \`countries\` (\n` +
+                        `    \`id\` int(5) NOT NULL AUTO_INCREMENT,\n` +
+                        `${columnsDefinition}` +
+                        `    PRIMARY KEY (\`id\`)\n` +
+                        `) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n` +
+                        `` +
+                        `CREATE TABLE IF NOT EXISTS \`country_lang_lnk\` (\n` +
+                        `${lookupColumnsDefinition}` +
+                        `    PRIMARY KEY (\`countryCode\`, \`languages\`)\n` +
+                        `) ENGINE=MyISAM DEFAULT CHARSET=utf8;\n\n` +
+                        `${countries}\n` +
+                        `${lookupCountries}`;
 
+                    break;
+                } else {
                     countries = "INSERT INTO `countries` (";
                     for (var i = 0; i < selectedColumns.length; i++) {
                         var columnName = selectedColumns[i].name;
@@ -137,22 +124,20 @@ var GeneratorActions = {
                     }
                     countries = countries.substring(0, countries.length - 1);
 
-//                    output = output.format(columnsDefinition, countries);
+                    output =
+                        `CREATE TABLE IF NOT EXISTS \`countries\` (\n` +
+                        `    \`id\` int(5) NOT NULL AUTO_INCREMENT,\n` +
+                        `${columnsDefinition}` +
+                        `    PRIMARY KEY (\`id\`)\n` +
+                        `) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=0;\n\n` +
+                        `${countries}`;
                 }
 
                 break;
             case outputTypes.OUTPUT_FIREBIRD:
                 // TODO: lookup
 
-
                 var insertStatement = "";
-
-                output =
-                    "CREATE TABLE countries (\n" +
-                        "    id int not null primary key,\n" +
-                        "{0}" +
-                        ");\n\n" +
-                        "{1}";
 
                 // insert statement
                 insertStatement = "INSERT INTO countries (";
@@ -184,15 +169,15 @@ var GeneratorActions = {
                 }
                 countries = countries.substring(0, countries.length - 1);
 
-//                output = output.format(columnsDefinition, countries);
+                output =
+                    `CREATE TABLE countries (\n` +
+                    `    id int not null primary key,\n` +
+                    `${columnsDefinition}` +
+                    `);\n\n` +
+                    `${countries}`;
 
                 break;
             case outputTypes.OUTPUT_XML:
-                output =
-                    "<countries>\n" +
-                        "{0}" +
-                        "</countries>";
-
                 for (var i = 0; i < data.length; i++) {
                     countries += "    <country";
                     for (var j = 0; j < selectedColumns.length; j++) {
@@ -204,19 +189,13 @@ var GeneratorActions = {
                     countries += "/>\n";
                 }
 
-//                output = output.format(countries);
+                output =
+                    `<countries>\n` +
+                    `${countries}` +
+                    `</countries>`;
 
                 break;
             case outputTypes.OUTPUT_JSON:
-                output =
-                    "{\n" +
-                        "    \"countries\": {\n" +
-                        "        \"country\": [\n" +
-                        "{0}" +
-                        "        ]\n" +
-                        "    }\n" +
-                        "}";
-
                 for (var i = 0; i < data.length; i++) {
                     countries += "            {\n";
                     for (var j = 0; j < selectedColumns.length; j++) {
@@ -231,7 +210,14 @@ var GeneratorActions = {
                 countries = countries.substring(0, countries.length - 2);
                 countries += "\n";
 
-//                output = output.format(countries);
+                output =
+                    `{\n` +
+                    `    \"countries\": {\n` +
+                    `        \"country\": [\n` +
+                    `${countries}` +
+                    `        ]\n` +
+                    `    }\n` +
+                    `}`;
 
                 break;
             case outputTypes.OUTPUT_CSV:
@@ -256,12 +242,6 @@ var GeneratorActions = {
 
                 break;
             case outputTypes.OUTPUT_YAML:
-                output =
-                    "---\n" +
-                        "countries:\n" +
-                        "  country:" +
-                        "{0}";
-
                 for (var i = 0; i < data.length; i++) {
                     countries += "\n    -";
                     for (var j = 0; j < selectedColumns.length; j++) {
@@ -272,7 +252,11 @@ var GeneratorActions = {
                     }
                 }
 
-//                output = output.format(countries);
+                output =
+                    `---\n` +
+                    `countries:\n` +
+                    `  country:` +
+                    `${countries}`;
 
                 break;
             default:

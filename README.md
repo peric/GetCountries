@@ -37,4 +37,3 @@ $ npm build
 
 * different gitignore files in master and gh-pages
 * finish other thing - for firebird db
-* output.format
