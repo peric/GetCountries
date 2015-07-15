@@ -1,8 +1,6 @@
 var outputTypes = require('../variables/outputTypes.js');
 var columnsLookup = require('../variables/columnsLookup.js');
 
-// TODO: move this thing for FB database here
-
 var GeneratorActions = {
     generateOutput: function (selectedOutputType, columns, settings, data) {
         var output = "";
@@ -136,6 +134,7 @@ var GeneratorActions = {
                 break;
             case outputTypes.OUTPUT_FIREBIRD:
                 // TODO: lookup
+                // TODO: this
 
                 var insertStatement = "";
 

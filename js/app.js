@@ -10,24 +10,4 @@ React.render(
     document.getElementById('content')
 );
 
-(function() {
-    var outputCode = document.getElementById('outputcode');
-
-    // select on focus
-    outputCode.onfocus = function() {
-        this.select();
-
-        // TODO: copy to clipboard
-
-        // https://github.com/zeroclipboard/zeroclipboard
-    };
-
-    // TODO: show loader on button
-
-//    $('#generateButton').on('click', function () {
-//
-//        var $btn = $(this).button('loading')
-//        // business logic...
-//    //            $btn.button('reset')
-//    })
-})();
+require('./actions/OutputActions.js');

@@ -133,11 +133,14 @@ var GeneratorApp = React.createClass({
                 </div>
                 <div className="row">
                     <form id="generateForm" onSubmit={this.getOutput}>
-                        <p className="text-center">
+                        <div className="text-center">
                             <button id="generateButton" className="btn btn-primary btn-lg" type="submit" data-loading-text="Loading...">
-                            Generate
+                                Generate
                             </button>
-                        </p>
+                        </div>
+                        <div className="text-center">
+                            <button id="copy-button" className="btn btn-default" data-clipboard-text="Copy Me!" title="Click to copy me.">Copy to Clipboard</button>
+                        </div>
                     </form>
                 </div>
                 <div className="row">
