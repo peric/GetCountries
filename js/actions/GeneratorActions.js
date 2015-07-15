@@ -149,7 +149,7 @@ var GeneratorActions = {
                     insertStatement += columnName + ", ";
                 }
                 insertStatement = insertStatement.substring(0, insertStatement.length - 2);
-                insertStatement += ") VALUES {0}";
+                insertStatement += ") VALUES ";
 
                 // insert values
                 for (var i = 0; i < data.length; i++) {
@@ -165,7 +165,7 @@ var GeneratorActions = {
                     }
                     country = country.substring(0, country.length - 2);
                     country += ");\n";
-                    countries += insertStatement.format(country);
+                    countries += insertStatement + country;
                 }
                 countries = countries.substring(0, countries.length - 1);
 
@@ -186,7 +186,7 @@ var GeneratorActions = {
 
                         countries += " " + columnName + "=\"" + value + "\"";
                     }
-                    countries += "/>\n";
+                    countries += " />\n";
                 }
 
                 output =
