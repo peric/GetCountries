@@ -29,7 +29,7 @@ var GeneratorApp = React.createClass({
             // based on the selected, disable or enable 'languagelookup' setting
             for (var key in settings) {
                 if (settings.hasOwnProperty(key) && settings[key].name === 'languagelookup') {
-                    if (settings[key].supportedOutputs.indexOf(selectedList[objectKey].name) === -1) {
+                    if (settings[key].supportedOutputs.indexOf(selectedList[objectKey]) === -1) {
                         settings[key].checked = false;
                         settings[key].disabled = true;
                     } else {
