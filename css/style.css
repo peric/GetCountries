@@ -1,13 +1,18 @@
 .text-center {
-    margin-bottom: 15px;
+  margin-bottom: 15px;
 }
+
+.fork-me-on-gh {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 .outputcode {
-	border:1px solid #999999;
-	width:100%;
-	margin:5px 0;
-	padding:3px;
-	resize: none;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
+  border: 1px solid #999999;
+  width: 100%;
+  margin: 5px 0;
+  padding: 3px;
+  resize: none;
+  box-sizing: border-box;
 }
