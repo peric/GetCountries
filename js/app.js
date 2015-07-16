@@ -1,4 +1,3 @@
-var $ = require('jquery');
 var React = require('react');
 var GeneratorApp = require('./components/GeneratorApp.react');
 var columns = require('./variables/columns.js');
