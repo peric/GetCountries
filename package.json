@@ -18,12 +18,12 @@
   "author": "Drazen Peric",
   "license": "MIT",
   "devDependencies": {
-    "browserify": "9.0.3",
+    "browserify": "10.2.6",
     "http-server": "0.8.0",
     "jquery": "^2.1.4",
-    "react": "^0.13.2",
-    "reactify": "^1.1.0",
-    "watchify": "^3.2.1",
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "watchify": "^3.2.3",
     "babelify": "^6.1.2",
     "zeroclipboard": "^2.2.0"
   }
