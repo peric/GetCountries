@@ -1,7 +1,7 @@
 {
   "name": "GetCountries",
-  "version": "0.0.1",
-  "description": "",
+  "version": "1.0.0",
+  "description": "Get Countries will fetch and print countries in different computer friendly formats like xml, csv, yaml, json etc.",
   "main": "js/app.js",
   "scripts": {
     "start": "http-server & npm run watch",
