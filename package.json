@@ -6,7 +6,8 @@
   "scripts": {
     "start": "http-server & npm run watch",
     "watch": "watchify -t babelify js/app.js -o dist/app.js | cp node_modules/zeroclipboard/dist/ZeroClipboard.swf dist/ZeroClipboard.swf",
-    "build": "browserify -t babelify js/app.js -o dist/app.js"
+    "build": "browserify -t babelify js/app.js -o dist/app.js",
+    "test": "npm run watch & watchify -t babelify test/all_spec.js -o dist/test.js & testem -f testem.json"
   },
   "repository": {
     "type": "git",
@@ -18,13 +19,14 @@
   "author": "Drazen Peric",
   "license": "MIT",
   "devDependencies": {
+    "babelify": "^6.1.2",
     "browserify": "10.2.6",
     "http-server": "0.8.0",
     "jquery": "^2.1.4",
     "react": "^0.13.3",
     "reactify": "^1.1.1",
+    "testem": "^0.8.5",
     "watchify": "^3.2.3",
-    "babelify": "^6.1.2",
     "zeroclipboard": "^2.2.0"
   }
 }
