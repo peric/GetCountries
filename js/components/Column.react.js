@@ -12,17 +12,16 @@ var Column = React.createClass({
         return (
             <div className="checkbox">
                 <label>
-                    <input
-                    type="checkbox"
-                    className="column"
-                    name="column"
-                    data-type="columns"
-                    checked={this.props.checked}
-                    onChange={this.handleChange} />
-                            {this.props.name}
+                    <input type="checkbox"
+                      className="column"
+                      name="column"
+                      data-type="columns"
+                      checked={this.props.checked}
+                      onChange={this.handleChange} />
+                      {this.props.name}
                 </label>
             </div>
-            );
+        );
     }
 });
 

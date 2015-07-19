@@ -23,7 +23,7 @@ var Setting = React.createClass({
                             {this.props.longName}
                 </label>
             </div>
-            );
+        );
     }
 });
 
