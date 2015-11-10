@@ -41,5 +41,4 @@ npm test
 
 ## TODO
 
-* different gitignore files in master and gh-pages
-* finish other thing - for firebird db
+- different gitignore files in master and gh-pages - gh-pages should have dist folder, master shouldn't
