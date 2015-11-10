@@ -1,0 +1,32 @@
+{
+  "name": "GetCountries",
+  "version": "1.0.0",
+  "description": "Get Countries will fetch and print countries in different computer friendly formats like xml, csv, yaml, json etc.",
+  "main": "js/app.js",
+  "scripts": {
+    "start": "http-server & npm run watch",
+    "watch": "watchify -t babelify js/app.js -o dist/app.js | cp node_modules/zeroclipboard/dist/ZeroClipboard.swf dist/ZeroClipboard.swf",
+    "build": "browserify -t babelify js/app.js -o dist/app.js | cp node_modules/zeroclipboard/dist/ZeroClipboard.swf dist/ZeroClipboard.swf",
+    "test": "npm run watch & watchify -t babelify test/all_spec.js -o dist/test.js & testem -f testem.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peric/GetCountries"
+  },
+  "engine": {
+    "node": ">=0.12.0"
+  },
+  "author": "Drazen Peric",
+  "license": "MIT",
+  "devDependencies": {
+    "babelify": "^6.1.2",
+    "browserify": "10.2.6",
+    "http-server": "0.8.0",
+    "jquery": "^2.1.4",
+    "react": "^0.13.3",
+    "reactify": "^1.1.1",
+    "testem": "^0.8.5",
+    "watchify": "^3.2.3",
+    "zeroclipboard": "^2.2.0"
+  }
+}

@@ -1,0 +1,17 @@
+const OUTPUT_MYSQL = 'MySQL';
+const OUTPUT_FIREBIRD = 'Firebird';
+const OUTPUT_XML = 'XML';
+const OUTPUT_JSON = 'JSON';
+const OUTPUT_CSV = 'CSV';
+const OUTPUT_YAML = 'YAML';
+
+var outputTypes = {
+    OUTPUT_MYSQL: OUTPUT_MYSQL,
+    OUTPUT_FIREBIRD: OUTPUT_FIREBIRD,
+    OUTPUT_XML: OUTPUT_XML,
+    OUTPUT_JSON: OUTPUT_JSON,
+    OUTPUT_CSV: OUTPUT_CSV,
+    OUTPUT_YAML: OUTPUT_YAML
+};
+
+module.exports = outputTypes;
