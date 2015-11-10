@@ -38,7 +38,3 @@ $ npm build
 ```sh
 npm test
 ```
-
-## TODO
-
-- different gitignore files in master and gh-pages - gh-pages should have dist folder, master shouldn't
