@@ -1,227 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Get countries list from geonames">
-<meta name="author" content="Drazen Peric">
-<meta name="keywords" content="countries, list, mysql,firebird, geonames, xml">
-<title>Generate countries list in various formats</title>
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
-<link rel="stylesheet" type="text/css" href="css/style.css" />
-<script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-35038390-1']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
-</script>
+  <meta charset="utf-8">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Get countries list from geonames">
+  <meta name="author" content="Drazen Peric">
+  <meta name="keywords" content="countries, list, mysql, firebird, geonames, xml, csv, yaml">
+  <title>getCountries()</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
-	<a href="https://github.com/peric/GetCountries"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub"></a>
-	<div class="jumbotron">
-		<div class="container">
-			<h1>getCountries()</h1>
-			<p><strong>MySQL</strong>, <strong>Firebird</strong>, <strong>XML</strong>, <strong>JSON</strong>, <strong>CSV</strong> and <strong>YAML</strong> generator for custom Countries data. In the textarea below, you can see pre-generated output for MySQL table. All the data is fetched from <a href="http://www.geonames.org" target="_blank">geonames.org</a></p>
-			<p>
-				<a id="showexamplecode" href="#">MySQL output example</a>
-			</p>
-			<p>
-				<code id="examplecode" class="examplecode">
-					CREATE TABLE IF NOT EXISTS `countries` (<br />
-					&emsp;&emsp;&emsp;&emsp;`idCountry` int(5) NOT NULL AUTO_INCREMENT,<br />
-					&emsp;&emsp;&emsp;&emsp;`countryCode` char(2) NOT NULL DEFAULT '',<br />
-					&emsp;&emsp;&emsp;&emsp;`countryName` varchar(80) NOT NULL DEFAULT '',<br />
-					&emsp;&emsp;&emsp;&emsp;PRIMARY KEY (`idCountry`)<br />
-					) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=251;<br /><br />
-
-					INSERT INTO `countries` (`countryCode`, `countryName`) VALUES<br />
-					('AD', 'Andorra'),<br />
-					('AE', 'United Arab Emirates'),<br />
-					('AF', 'Afghanistan')<br />
-					.<br />
-					.<br />
-					.
-				</code>
-			</p>
-		</div>
-	</div>
-	<div class="container">
-		<div class="row">
-			<div class="col-md-4">
-				<h3>Columns</h3>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="countryCode" checked="checked">
-						countryCode
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="countryName" checked="checked">
-						countryName
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="currencyCode">
-						currencyCode
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="population">
-						population
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="fipsCode">
-						fipsCode
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="isoNumeric">
-						isoNumeric
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="north">
-						north
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="south">
-						south
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="east">
-						east
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="west">
-						west
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="capital">
-						capital
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="continentName">
-						continentName
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="continent">
-						continent
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="areaInSqKm">
-						areaInSqKm
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="languages">
-						languages
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="isoAlpha3">
-						isoAlpha3
-					</label>
-				</div>
-				<div class="checkbox">
-					<label>
-						<input type="checkbox" class="options" name="options" value="geonameId">
-						geonameId
-					</label>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<h3>Additional options</h3>
-				<div class="checkbox">
-					<label>
-						<input id="dblookup" type="checkbox" class="dblookup" name="dblookup" value="dblookup">
-						Language Lookup tables
-					</label>
-				</div>
-			</div>
-			<div class="col-md-4">
-				<h3>Output type</h3>
-				<div class="radio">
-					<label>
-						<input type="radio" class="codetype" name="codetype" id="mysqltype" value="mysqltype" checked>
-						MySQL
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<input type="radio" class="codetype" name="codetype" id="firebirdtype" value="firebirdtype">
-						Firebird
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<input type="radio" class="codetype" name="codetype" id="xmltype" value="xmltype">
-						XML
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<input type="radio" class="codetype" name="codetype" id="jsontype" value="jsontype">
-						JSON
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<input type="radio" class="codetype" name="codetype" id="csvtype" value="csvtype">
-						CSV
-					</label>
-				</div>
-				<div class="radio">
-					<label>
-						<input type="radio" class="codetype" name="codetype" id="yamltype" value="yamltype">
-						YAML
-					</label>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<p class="text-center">
-					<button id="generatecode" class="btn btn-primary btn-lg" type="button">Generate</button>
-				</p>
-			</div>
-			<textarea id="generatedcode" class="generatedcode" rows="30"></textarea>
-		</div>
-	</div>
-	<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
-	<script src="https://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-	<script type="text/javascript" src="js/functions.js"></script>
+  <a href="https://github.com/peric/GetCountries">
+    <img class="fork-me-on-gh" src="//s3.amazonaws.com/github/ribbons/forkme_right_green_007200.png" alt="Fork me on GitHub">
+  </a>
+  <div class="jumbotron">
+    <div class="container">
+      <h1>getCountries()</h1>
+      <p><strong>MySQL</strong>, <strong>Firebird</strong>, <strong>XML</strong>, <strong>JSON</strong>, <strong>CSV</strong> and <strong>YAML</strong> generator for custom Countries data. In the textarea below, you can see pre-generated output for MySQL table. All the data is fetched from <a href="http://www.geonames.org" target="_blank">geonames.org</a></p>
+    </div>
+  </div>
+  <div id="content" class="container"></div>
+  <script src="dist/app.js"></script>
+  <script type="text/javascript">
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-35038390-1']);
+    _gaq.push(['_trackPageview']);
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+  </script>
 </body>
 </html>
