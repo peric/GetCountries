@@ -39,6 +39,10 @@ $ npm build
 npm test
 ```
 
+## Resources
+
+[Wordpress article](https://echobehind.wordpress.com/2012/09/23/world-countries-database-table-for-mysql/)
+
 ## Contributors
 
 [<img alt="peric" src="https://avatars0.githubusercontent.com/u/1193864?v=4&s=117" width="117">](https://github.com/peric) |
