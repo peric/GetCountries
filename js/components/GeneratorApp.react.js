@@ -63,7 +63,7 @@ var GeneratorApp = React.createClass({
             e.preventDefault();
         }
 
-        var source = 'http://api.geonames.org/countryInfoJSON?username=dperic';
+        var source = 'https://secure.geonames.org/countryInfoJSON?username=dperic';
         var columns = this.state.columns;
         var settings = this.state.settings;
         var selectedOutputType = this.state.selectedOutputType;
